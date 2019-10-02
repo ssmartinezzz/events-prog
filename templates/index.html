@@ -1,0 +1,70 @@
+{% from "macros.html" import mostrarevents %}
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit,mostrar_error %}
+{% extends "hyf.html" %}
+{% block estilos %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+{% endblock %}
+{% block contenido %}
+
+<div class="container" id="filtro">
+	<div class="row">
+		<form method="POST" action="{{ url_for("index") }}">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+			<div class="form-inline">
+				<div class="col-md-3">
+					{{mostrar_campo(formularionav.fechainicio, class='form-control')}}
+				</div>
+				<div class="col-md-3">
+					{{mostrar_campo(formularionav.fechafinal, class='form-control')}}
+				</div>
+				<div class="col-md-3">
+					{{mostrar_campo(formularionav.titulo, class='form-control')}}
+				</div>
+				<div class="col-md-3">
+					{{mostrar_campo(formularionav.opciones, class='form-control')}}
+				</div>
+				<div class="row">
+					{{ mostrar_campo_submit(formularionav.submit , class='btn btn-primary')}}
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+</div>
+
+<div class="container" id="eventos">
+	<div class="row">
+		<div class="col-md-12">
+
+		</div>
+	</div>
+
+	<div class="row">
+		{% for evento in eventos.items %}
+		{{mostrarevents(evento)}}
+		{% endfor %}
+	</div>
+	<div class="pagination-bar">
+	<div class="row">
+		{% if eventos.has_prev %}
+		<a href="{{ url_for('index', pag=eventos.prev_num) }}">Anterior</a>
+		{% else %} Anterior {% endif %}
+		|
+
+		{% for i in range(1,(eventos.pages+1)) %}
+		{% if eventos.page == i %}
+		{{i}}
+		{% else %}
+		<a href="{{ url_for('index', pag=i) }}">{{i}}</a>
+		{% endif %}
+		{% endfor %}
+		|
+		{% if eventos.has_next %}
+		<a href="{{ url_for('index', pag=eventos.next_num) }}">Siguiente</a>
+		{% else %} Siguiente {% endif %}
+	</div>
+</div>
+
+
+	{% endblock %}

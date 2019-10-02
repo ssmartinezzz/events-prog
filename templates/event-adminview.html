@@ -1,0 +1,92 @@
+{% from "macros.html" import comentariosadmin,expanded_event,mostrarevents %}
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+{% extends "hyf.html" %}
+{% block estilos %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+{% endblock %}
+{% block contenido %}
+
+<div class="container">
+  <div class="row">
+    <div class="Entorno">
+        {{expanded_event(evento)}}
+      <div class="reporte">
+        <label> Herramientas admin</label>
+        <div class="row">
+          <div class="col-md-4">
+            <button type="button" class="btn btn-success">Aprobar</button>
+          </div>
+          <div class="col-md-2">
+            <button type="button" class="btn btn-danger">Desaprobar</button>
+          </div>
+          <div class="col-md-2">
+
+          </div>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-warning">Eliminar</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="commentbox">
+
+        <div class="row">
+          <div class="col-md-2">
+
+          </div>
+          <div class="col-md-8">
+            <h4>Sección de comentarios</h4>
+          </div>
+          <div class="col-md-2">
+            <button type="button" href="{{url_for('user')}}" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+            <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+              <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
+
+                <form method="POST" action="{{ url_for('eventoad', id=evento["id"]) }}" enctype="multipart/form-data">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                  <div class="modal-content modalcoment2">
+                    <div class="modal-header">
+                      <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Comentar Evento</h3>
+                      <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="ekis">&times;</span>
+                      </button>
+                    </div>
+
+                    <div class="modal-body">
+                      <div class="comentario">
+                        {{ mostrar_campo(formulario.comentario, class='form-control', style="width: 490px; height: 170px" )}}
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>
+                      {{ mostrar_campo_submit(formulario.submit , class='btn btn-danger enviar')}}
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {% for comentario in comentadmin %}
+          {{ comentariosadmin(comentario) }}
+          {% endfor %}
+        </div>
+        <div class="col-md-2">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

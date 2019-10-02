@@ -1,0 +1,29 @@
+{% extends "hyf.html" %}
+{% block estilos %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+{% endblock %}
+{% block iconos %}
+<script src="https://code.iconify.design/1/1.0.2/iconify.min.js"></script>
+{% endblock %}
+{% block contenido %}
+<div class="Menu">
+  <div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+      <div class="Entorno">
+        <h1 id="registrotitulo">Menú principal</h1>
+      </div>
+      <a type="button" class="btn btn-primary btn-lg btn-block" href="{{url_for('crear')}}">Crear un evento</a>
+      <!--  <a type="button" class="btn btn-primary btn-lg btn-block" href="">Modificar/Borrar evento</a> -->
+      <a type="button" class="btn btn-primary btn-lg btn-block" href="{{url_for('index')}}">Ver eventos globales</a>
+      <a type="button" class="btn btn-primary btn-lg btn-block" href="{{url_for('eventos')}}">Mis eventos</a>
+    </div>
+    <div class="col-md-2">
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

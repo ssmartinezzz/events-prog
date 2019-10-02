@@ -1,0 +1,162 @@
+{% macro mostrarevents(evento) %}
+<div class="col-md-4">
+  <div class="card-deck">
+    <div class="card">
+      <img src="{{url_for('static',filename='Fondo/Geralt.jpg')}}" class="card-img-top img-fluid " alt="...">
+      <div class="card-body">
+
+        <h5 class="card-title">Evento: {{evento["nombre"]}}</h5>
+        <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-calendar" data-inline="false"></span>{{evento["fecha"]}}</p>
+        <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-map" data-inline="false"></span>{{evento["tipo"]}}</p>
+        <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
+        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+        <a class="btn-btn-dark" href="{{url_for('mostrarevento',id=evento["eventoId"])}}"> Ver más</a>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+
+
+{% macro evento_admin (evento)%}
+<div class="barraevento">
+  <label>{{evento["titulo"]}}</label>
+  <div class="row">
+    <div class="col-md-3">
+      <label>Visibilidad</label>
+      <span class="iconify" data-icon="il-eye" data-inline="false"></span>
+    </div>
+    <div class="col-md-3">
+      <button type="button" class="btn btn-dark">Ver</button>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-danger" type="submit">Eliminar</button>
+    </div>
+    <div class="col-md-3">
+      <button type="button" class="btn btn-outline-success">Aprobar</button>
+      <button type="button" class="btn btn-outline-danger">Desaprobar</button>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro evento_comentario (comentario) %}
+
+<div class="row">
+  <div class="col-md-2">
+  </div>
+  <div class=col-md-8>
+    <div class="media">
+      <div class="media-body">
+        <h3 class="mt-0 font-weight-bold blue-text">{{comentario["autor"]}}</h3>
+        <textarea class="form-control">{{comentario["contenido"]}}</textarea>
+        <h3 class="mt-0 font-weight-bold blue-text"></h3>
+        <h3 class="mt-0 font-weight-bold blue-text"></h3>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-md-2">
+  </div>
+</div>
+
+{% endmacro %}
+{% macro comentariosadmin (comentario) %}
+<div class="row">
+  <div class="col-md-2">
+  </div>
+  <div class=col-md-8>
+    <div class="media">
+      <div class="media-body">
+        <h3 class="mt-0 font-weight-bold blue-text">{{comentario["autor"]}}</h3>
+        <textarea class="form-control">{{comentario["contenido"]}}</textarea>
+        <h3 class="mt-0 font-weight-bold blue-text"></h3>
+        <h3 class="mt-0 font-weight-bold blue-text"></h3>
+        <button class="submit">Eliminar comentario</button>
+      </div>
+    </div>
+    <div class="media mt-3 shadow-textarea">
+      <div class="media-body">
+        <h3 class="mt-0 font-weight-bold blue-text">@administrador:</h3>
+        <div class="form-group basic-textarea rounded-corners">
+          <textarea class="form-control z-depth-1" id="exampleFormControlTextarea345" rows="3" placeholder="Comentar..."></textarea>
+          <button type="submit">Responder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+  </div>
+</div>
+{% endmacro %}
+
+<!-- Macros para Formularios -->
+<!-- Macro que se encarga de mostrar los errores de validación -->
+{% macro mostrar_error(campo) %}
+	{% if campo.errors %} <!--Si existen errores -->
+	  <div class="alert alert-danger" role="alert">
+	  {% for error in campo.errors %} <!--Recorrer errrores-->
+	   	{{ error }}<br><!--Mostrar error -->
+	  {% endfor %}
+	  </div>
+	{% endif %}
+{% endmacro %}
+
+<!-- Macro que se encarga de mostrar los campos del formulario -->
+{% macro mostrar_campo(campo) %}
+	{{ campo.label }} <!-- Mostrar etiqueta -->
+	{{ campo(**kwargs)|safe }} <!-- Mostrar campo -->
+	{{mostrar_error(campo)}}  <!-- Llamar a macro que muestra el error -->
+{% endmacro %}
+
+<!-- Macro que se encarga de mostrar los campos tipo radio del formulario -->
+{% macro mostrar_campo_radio(campo) %}
+	{{ campo.label }} <!-- Mostrar etiqueta -->
+	<br/>
+	{% for subfield in campo %} <!--Recorrer cada una de las opciones -->
+			{{ subfield }}  <!-- Mostrar opción -->
+	  		{{ subfield.label }} <!-- Mostrar etiqueta -->
+	{% endfor %}
+	{{mostrar_error(campo)}} <!-- Llamar a macro que muestra el error -->
+{% endmacro %}
+
+
+<!-- Macro que se encarga de mostrar los campos tipo submit formulario -->
+{% macro mostrar_campo_submit(campo) %}
+	{{ campo(**kwargs)|safe }} <!-- Mostrar campo -->
+{% endmacro %}
+
+{% macro expanded_event(evento) %}
+<h1 id="registrotitulo">Evento: {{evento["nombre"]}}</h1>
+<div class="row">
+  <div class="col-md-6">
+    <div class="imagen">
+      <img src="{{url_for('static',filename='Fondo/messi.jpg')}}" class="card-img" alt="...">
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class=cuerpotexto>
+      <div class="form-group">
+        <label for="Evento:"><span class="iconify" data-icon="bpmn:end-event-multiple" data-inline="false"></span>Evento:</label>
+        {{evento["nombre"]}}
+      </div>
+      <div class="form-group">
+          <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
+      </div>
+      <div class="form-group">
+        <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-calendar" data-inline="false"></span>{{evento["fecha"]}}</p>
+      </div>
+      <div class="form-group">
+<span class="iconify" data-icon="mdi:star-four-points-outline" data-inline="false"></span>{{evento["tipo"]}}
+
+      </div>
+      <div class="form-group" class="col-md-2">
+        <label for="comment">Descripcion:</label>
+        {{evento["descripcion"]}}
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

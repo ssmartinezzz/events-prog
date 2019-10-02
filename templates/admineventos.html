@@ -1,0 +1,125 @@
+{% from "macros.html" import evento_admin %}
+{% extends "hyf.html" %}
+{% block estilos %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+{% endblock %}
+{% block contenido %}
+<!--<h5 id="registrotitulo"></h5>
+<div class="row">
+  <div class="col-md-2">
+
+  </div>
+  <div class="col-md-8">
+    <div class="eventos">
+      <div class="barraevento">
+        <label>Evento 1</label>
+        <div class="row">
+          <div class="col-md-3">
+            <label>Visibilidad</label>
+            <span class="iconify" data-icon="il-eye" data-inline="false"></span>
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-dark">Ver</button>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-danger" type="submit">Eliminar</button>
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-outline-success">Aprobar</button>
+            <button type="button" class="btn btn-outline-danger">Desaprobar</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="barraevento">
+        <label>Evento 2</label>
+        <div class="row">
+
+          <div class="col-md-3">
+            <label>Visibilidad</label>
+            <span class="iconify" data-icon="il-eye" data-inline="false"></span>
+
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-dark">Ver</button>
+
+
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-danger" type="submit">Eliminar</button>
+
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-outline-success">Aprobar</button>
+            <button type="button" class="btn btn-outline-danger">Desaprobar</button>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="barraevento">
+        <label>Evento 3</label>
+        <div class="row">
+
+          <div class="col-md-3">
+            <label>Visibilidad</label>
+            <span class="iconify" data-icon="il-eye" data-inline="false"></span>
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-dark">Ver</button>
+
+
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-danger" type="submit">Eliminar</button>
+
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-outline-success">Aprobar</button>
+            <button type="button" class="btn btn-outline-danger">Desaprobar</button>
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="barraevento">
+
+        <label>Evento 4</label>
+        <div class="row">
+
+          <div class="col-md-3">
+            <label>Visibilidad</label>
+            <span class="iconify" data-icon="feather:eye-off" data-inline="false"></span>
+
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-dark">Ver</button>
+
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-danger" type="submit">Eliminar</button>
+
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-outline-success">Aprobar</button>
+            <button type="button" class="btn btn-outline-danger">Desaprobar</button>
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+
+  </div>
+</div>
+-->
+{% for evento in listaeventos %}
+{{ evento_admin(evento)}}
+{% endfor %}
+{% endblock %}

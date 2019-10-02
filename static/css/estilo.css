@@ -1,0 +1,144 @@
+body {
+  background-image: url('../Fondo/mainbackground.png');
+  background-repeat: ;
+  background-size: cover;
+  background-position: center;
+  background-color: black;
+}
+
+#filtro {
+  border: 1px solid grey;
+  background-color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: -100px;
+  padding-right: -100px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  width: 100%;
+}
+
+.card-deck {
+  margin-bottom: 50px;
+  padding-left: 50px;
+  padding-bottom: 50px;
+  padding-right: 50px;
+  height: auto;
+}
+
+.card-title {
+  text-align: center;
+}
+
+.form-check-inline {
+  margin-right: 100px;
+}
+/* Modificacion de la parte de la ventana: registro*/
+.registro {
+  border: 3px solid black;
+  padding: 80px;
+  padding-left: 80px;
+  padding-right: 80px;
+  background-image: url('../Fondo/cuero.jpg');
+  background-repeat: repeat;
+  background-size: auto;
+  min-height: 40px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-top: 20px;
+}
+#registrotitulo {
+  text-align: center;
+  color: solid black;
+}
+
+#reg1 {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 50px;
+  margin-top: 0px;
+  margin-bottom: -10px;
+}
+/*Menu principal*/
+.menuprincipal{
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 50px;
+}
+/*Parte css de la vista de cracion de evento*/
+.creacion {
+  border: 10px solid black;
+  padding: 80px;
+  padding-left: 80px;
+  padding-right: 80px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  background-image: url('../Fondo/fede.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+/*cs del menu gestion de eventos*/
+.eventos{
+  padding-top: 10px;
+}
+.barraevento{
+  margin-top: 20px;
+  padding-left: 40px;
+  padding-right: 5px;
+  padding-bottom: 10px;
+  border: 2px solid black;
+  background-image: url('../Fondo/fondoblanco.jpg');
+}
+/*parte css de la vista evento en particular*/
+.Entorno {
+  border: 1px solid black;
+  margin-top: 80px;
+  background-image: url('../Fondo/fondoevento.jpg');
+}
+.cuerpotexto{
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+
+}
+.imagen {
+  border: 3px solid black;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  margin-right: 50px;
+  margin-left: 30px;
+}
+
+.commentbox {
+  padding-left: 20px;
+  padding-right: 10px;
+  padding-top: 10px;
+  margin-top: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
+
+}
+.reporte{
+  margin-left: 60px;
+  padding-left: 2px;
+  margin-top: 40px;
+
+}
+/*Encabezado y pie de la página*/
+#logo{
+  max-width: 100px;
+  max-height: 100px;
+}
+#Pie{
+
+  border:2px none;
+  color: white;
+
+}
+/*ventana del login*/
+.loginuser{
+  border: 1px solid black;
+  background-image: url('../Fondo/flay.jpg');
+  padding-top: 10%;
+  padding-bottom: 10%;
+}

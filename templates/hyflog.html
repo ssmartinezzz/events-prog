@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://code.iconify.design/1/1.0.2/iconify.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <meta charset="UTF-8">
+  <title>Página principal</title>
+  {% block estilos %}
+  <link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+  {% endblock %}
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="Cabeza">
+
+    <div class="row">
+      <img src="{{url_for('static',filename='Fondo/logo.png')}}" alt="logo" id="logo">
+    </div>
+
+
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('index')}}">Inicio <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('menu')}}">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"></a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        <form>
+          <div class="form-row">
+            <div class="col-md-2">
+            </div>
+
+            <div class="col-md-4">
+               <span> @usuario</span  >
+            </div>
+            <div class="col-md-4">
+                <a type="button"class="btn-btn-dark" href="">Cerrar sesión</a>
+            </div>
+            <div class="col-md-2">
+            </div>
+          </div>
+        </form>
+      </span>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!--Obtener mensajes mensajes-->
+        {% with messages = get_flashed_messages() %}
+        <!--Si existen mensajes-->
+        {% if messages %}
+        <!--Recorrer mensajes-->
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <!--Mostrar mensaje-->
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+
+
+  {% block contenido %}
+
+  {% endblock %}
+
+  <!-- Footer -->
+  <footer class="page-footer font-small blue pt-4" id="Pie">
+    <div class="container-fluid text-center text-md-left">
+      <div class="row">
+        <div class="col-md-6 mt-md-0 mt-3">
+          <p>¿Quienes somos?</p>
+          <p>
+            Somos una organizacion sin fines de lucro, con el objetivo de mostrar, ordenar y publicitar eventos de libre acceso.
+          </p>
+        </div>
+        <hr class="clearfix w-100 d-md-none pb-3">
+        <div class="col-md-3 mb-md-0 mb-3">
+          <h5 class="text-uppercase">Ir a...</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a href="{{url_for('crear')}}">Crear evento</a>
+            </li>
+            <li>
+              <a href="{{url_for('eventos')}}">Ver mis eventos</a>
+            </li>
+            <li>
+              <a href="">Modificar evento</a>
+            </li>
+            <li>
+              <a href="{{url_for('index')}}">Ver eventos globales</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-md-0 mb-3">
+          <h5 class="text-uppercase">Redes sociales</h5>
+
+          <ul class="list-unstyled">
+            <li>
+              <a href="#!">Facebook</a>
+            </li>
+            <li>
+              <a href="#!">Twitter</a>
+            </li>
+            <li>
+              <a href="#">Instagram</a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright text-center py-3">© 2019 Copyright:
+      <a> eventZ all rights reserved</a>
+    </div>
+  </footer>
+
+</body>

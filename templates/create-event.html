@@ -1,0 +1,61 @@
+{% extends "hyf.html" %}
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit,mostrar_error %}
+{% block estilos %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+{% endblock %}
+{% block contenido %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="creacion">
+
+        <h1 id="registrotitulo">Crear Evento</h1>
+        <form method="POST" action="{{ url_for(destino) }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+
+          <div class="form-group">
+            {{mostrar_campo(formulario.titulo, class='form-control')}}
+          </div>
+
+          <div>
+            {{mostrar_campo(formulario.fechaevento,class='form-contol')}}
+          </div>
+          <div>
+            {{mostrar_campo(formulario.hora , class='form-control')}}
+          </div>
+          <div>
+            {{mostrar_campo(formulario.opciones,class='form-control')}}
+          </div>
+
+          <div>
+            {% if(destino=="crear") %}
+                {{ mostrar_campo(formulario.imagen , class='form-control')}}
+            {% endif %}
+            {% if(destino=="actualizar") %}
+
+               <img style="width:130px;margin-left:20px;margin-bottom:-25px;" src="{{url_for('static', filename='Fondo/'+formulario.imagen.data)}}" >
+            {% endif %}
+            </div>
+
+          <div>
+            {{mostrar_campo(formulario.desc,class='form-control')}}
+          </div>
+
+
+          <div>
+            {{ mostrar_campo_submit(formulario.enviar , class='btn btn-success')}}
+
+          </div>
+          <!-- Si el formulario es llamado para insertar mostrar el campo, sino mostrar la imagen -->
+
+
+
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
