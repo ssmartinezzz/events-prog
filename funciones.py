@@ -41,7 +41,7 @@ def navbar(formularionav):
     print(formularionav.fechainicio.data)
     print(formularionav.fechafinal.data)
     print(formularionav.titulo.data)
-    print(formularionav.opciones.data)        
+    print(formularionav.opciones.data)
 def listEvent():
     eventlist =db.session.query(Evento).all()
     return eventlist

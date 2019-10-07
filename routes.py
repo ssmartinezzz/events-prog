@@ -62,7 +62,9 @@ def menu():
 
 @app.route('/mis-eventos')
 def eventos():
-    return render_template('my-events.html')
+    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==282).all()
+
+    return render_template('my-events.html',listaeventos=listaeventos)
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
 @app.route('/creacion', methods=["POST", "GET"])
@@ -93,7 +95,7 @@ def actualizar():
         evento.tipo=formulario.opciones.data
         evento.descripcion=formulario.desc.data
         evento.imagen=formulario.imagen.data
-        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.opciones.data,formulario.desc.data,formulario.imagen.data,203)
+        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,formulario.imagen.data,formulario.opciones.data,203)
         return redirect(url_for('index'))
     else:
             formulario.titulo.data=evento.nombre
@@ -115,7 +117,7 @@ def mostrarevento(id):
     if formulario.validate_on_submit():
         flash('Comentario Enviado')
         pCommentary(formulario)
-        return redirect(url_for('mostrarevento',id=evento))
+        return redirect(url_for('mostrarevento',id=evento['eventoId']))
 
     return render_template('evento.html', formulario=formulario, id=id, evento=evento, listacomentarios=listacomentarios, mostrarevento=mostrarevento,listaeventos=listaeventos)
 
@@ -130,15 +132,16 @@ def menuadmin():
     return render_template('admin-menu.html')
 
 #Ruta que le permite visibilizar los eventos disponibles a controlar.
-@app.route('/admin/regular')
+@app.route('/admin/regular/')
 def regular():
-    listaeventos = listar_eventos()
-    return render_template('admineventos.html', listaeventos=listaeventos)
+    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==282).all()
+    #evento=db.session.query(Evento).filter(Evento.eventoId==id).one()
+    return render_template('admineventos.html',listaeventos=listaeventos)
 
 #Ruta para que el admin regule un evento "x", y que en el mismo utilizando el formulario de hacer comentario pueda hacer un comentario.
 @app.route('/admin/evento/<id>',methods=["POST","GET"])
 def eventoad(id):
-    listaeventos=listar_eventos()
+    #listaeventos=listar_eventos()
     formulario =Comentarios()
     comentadmin = comentarios()
     evento = db.session.query(Evento).get(id)
@@ -149,18 +152,16 @@ def eventoad(id):
         return redirect(url_for('eventoad',id=evento['eventoId']))
     return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento,formulario=formulario)
 
-
-
-@app.route('/evento/eliminar/<id>')
-def eliminarEvento(id):
-    # EJ: persona/eliminar/1
-    #Obtener persona por id
+def deleteEvent(id):
     evento = db.session.query(Evento).get(id)
-    #Eliminar de la db
     db.session.delete(evento)
-    #Hacer commit de los cambios
     db.session.commit()
-    return redirect(url_for('listarEventos'))
+    flash('Evento eliminado con exito!')
+    return redirect(url_for('regular'))
+
+
+
+
 
 
 @app.route('/comentario/list')
