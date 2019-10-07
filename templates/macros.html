@@ -20,19 +20,19 @@
 
 
 
-{% macro evento_admin (evento)%}
+{% macro evento_admin (evento) %}
 <div class="barraevento">
-  <label>{{evento["titulo"]}}</label>
+  <label>{{evento["nombre"]}}</label>
   <div class="row">
     <div class="col-md-3">
       <label>Visibilidad</label>
       <span class="iconify" data-icon="il-eye" data-inline="false"></span>
     </div>
     <div class="col-md-3">
-      <button type="button" class="btn btn-dark">Ver</button>
+      <a type="button" class="btn btn-dark" href="{{url_for('eventoad',id=evento["eventoId"])}}">Ver<a>
     </div>
     <div class="col-md-3">
-      <button class="btn btn-danger" type="submit">Eliminar</button>
+      <a class="btn btn-danger" type="button" href="">Eliminar</a>
     </div>
     <div class="col-md-3">
       <button type="button" class="btn btn-outline-success">Aprobar</button>
@@ -158,5 +158,34 @@
       </div>
     </div>
   </div>
+</div>
+{% endmacro %}
+{% macro myevents(evento)%}
+<div class="barraevento">
+  <label>{{evento["nombre"]}}</label>
+  <div class="row">
+
+    <div class="col-md-3">
+      <label>Visibilidad</label>
+      <span class="iconify" data-icon="il-eye" data-inline="false"></span>
+
+    </div>
+    <div class="col-md-3">
+      <a type="button" class="btn btn-dark" href="{{url_for('actualizar',id=evento["eventoId"])}}">Modificar</a>
+
+
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-danger" type="submit">Eliminar</button>
+
+    </div>
+    <div class="col-md-3">
+      <label>Estado</label>
+      <span class="iconify" data-icon="typcn:tick-outline" data-inline="false"></span>
+
+    </div>
+
+  </div>
+
 </div>
 {% endmacro %}
