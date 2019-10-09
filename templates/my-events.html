@@ -13,14 +13,50 @@
 
   </div>
   <div class="col-md-8">
-    <div class="eventos">
-      {% for evento in listaeventos %}
-      {{myevents(evento)}}
-      {% endfor %}
+    <div class="row">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-8">
+        <h7 id="titulosblancos">Eventos aprobados</h7>
+      </div>
+      <div class="col-md-2">
+      </div>
 
-  <div class="col-md-2">
+      <div class="row">
+        {% for evento in listaeventos %}
+        {% if (evento.aprobado==True) %}
+        {{ myevents(evento)}}
+        {% endif %}
+        {% endfor %}
+      </div>
 
+
+
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-8">
+        <h7 id="titulosblancos">Eventos pendientes de ser aprobados</h7>
+      </div>
+      <div class="col-md-2">
+      </div>
+
+      <div class="row">
+        {% for evento in listaeventos %}
+        {% if (evento.aprobado==False) %}
+        {{ myevents(evento)}}
+        {% endif %}
+        {% endfor %}
+      </div>
+
+
+
+    </div>
+
+    <div class="col-md-2">
+
+    </div>
   </div>
-</div>
 
-{% endblock %}
+  {% endblock %}

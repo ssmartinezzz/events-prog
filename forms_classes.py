@@ -74,16 +74,16 @@ class Navegation(FlaskForm):
 
         fechainicio = DateField('Fecha',
         [
-            validators.DataRequired(message="Ingrese una fecha para buscar hacia adelante!")
+
         ])
 
         fechafinal= DateField('Fecha',
         [
-            validators.DataRequired(message="Establezca la fecha limite del buscador")
+
         ])
         titulo= StringField('Título',
         [
-            validators.Required(message = "Ingrese el titulo del evento a buscar")
+
         ])
         lista_opciones = [
         ('1','Deportivo'),

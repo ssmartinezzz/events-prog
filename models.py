@@ -16,7 +16,7 @@ class Evento(db.Model):
 
 
     def __repr__(self):
-        return '<Evento: %r %r %r %r %r>' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo)
+        return '<Evento: %r %r %r %r %r %r %r %r >' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo,self.aprobado)
 
 class Usuario(db.Model):
     usuarioId = db.Column(db.Integer, primary_key=True)

@@ -18,6 +18,11 @@
 </head>
 
 <body>
+
+
+
+  {% if (logueado is sameas false) %}
+
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="Cabeza">
 
     <div class="row">
@@ -44,8 +49,8 @@
       <span class="navbar-text">
         <form>
           <div class="form-row">
-              <div class="form-group col-md-2">
-              </div>
+            <div class="form-group col-md-2">
+            </div>
             <div class="form-group col-md-4">
               <a type=button class="btn btn-danger" href="{{url_for('logIn')}}">Login</a>
 
@@ -54,13 +59,103 @@
             <div class="form-group col-md-4">
               <a type=button class="btn btn-danger" href="{{url_for('registro')}}">Registrarse</a>
             </div>
-              <div class="form-group col-md-2">
-              </div>
+            <div class="form-group col-md-2">
+            </div>
           </div>
         </form>
       </span>
     </div>
   </nav>
+  {% endif %}
+  {% if (logueado is sameas true) %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="Cabeza">
+
+    <div class="row">
+      <img src="{{url_for('static',filename='Fondo/logo.png')}}" alt="logo" id="logo">
+    </div>
+
+
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('index')}}">Inicio <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('menu')}}">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"></a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        <form>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+            </div>
+            <div class="form-group col-md-4">
+              <a >Welcome back user!</a>
+
+            </div>
+            <div class="form-group col-md-4">
+              <a type=button class="btn btn-danger" href="">Logout</a>
+            </div>
+            <div class="form-group col-md-2">
+            </div>
+          </div>
+        </form>
+      </span>
+    </div>
+  </nav>
+  {% endif %}
+  {% if (admin is sameas true) %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="Cabeza">
+
+    <div class="row">
+      <img src="{{url_for('static',filename='Fondo/logo.png')}}" alt="logo" id="logo">
+    </div>
+
+
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('index')}}">Inicio <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('menu')}}">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"></a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        <form>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+            </div>
+            <div class="form-group col-md-4">
+              <a >Welcome back admin!</a>
+
+            </div>
+            <div class="form-group col-md-4">
+              <a type=button class="btn btn-danger" href="">Logout</a>
+            </div>
+            <div class="form-group col-md-2">
+            </div>
+          </div>
+        </form>
+      </span>
+    </div>
+  </nav>
+  {% endif %}
+
   <div class="container">
     <div class="row">
       <div class="col-md-12">
