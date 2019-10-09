@@ -70,7 +70,7 @@
   <div class=col-md-8>
     <div class="media">
       <div class="media-body">
-        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario["usuarioId"]}}</h3>
+        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario.usuario.nombre}}</h3>
         <textarea class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
@@ -171,8 +171,7 @@
 
     </div>
     <div class="col-md-3">
-      <label>Estado</label>
-      <span class="iconify" data-icon="typcn:tick-outline" data-inline="false"></span>
+      <a type="button" class="btn btn-dark" href="{{url_for('mostrarevento',id=evento["eventoId"])}}">Ver</a>
 
     </div>
 

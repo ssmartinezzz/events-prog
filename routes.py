@@ -63,7 +63,7 @@ def menu():
 
 @app.route('/mis-eventos')
 def eventos():
-    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==292).all()
+    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==301).all()
     return render_template('my-events.html',listaeventos=listaeventos)
 
 
@@ -80,8 +80,8 @@ def crear():
         f.save(os.path.join('static/Fondo/', filename))
         flash("Evento creado exitosamente!")
         showEve(formulario)
-        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,280)
-        return redirect(url_for('crear'))
+        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,301)
+        return redirect(url_for('eventos'))
     return render_template('create-event.html', formulario=formulario, destino="crear")
 
 #Ruta que nos permite actualizar los datos de un evento traido de db, donde al ser igualados y llenados en el formulario podemos efectuar los cambios
@@ -128,7 +128,7 @@ def mostrarevento(id):
     if form.validate_on_submit():
         flash('Comentario Enviado')
         pCommentary(form)
-        createComment(form.comentario.data,282,11)
+        createComment(form.comentario.data,301,111)
         return redirect(url_for('mostrarevento',id=id))
     return render_template('evento.html', form=form, id=id, evento=evento, commentList=commentList, mostrarevento=mostrarevento,listaeventos=listaeventos)
 @app.route('/comentary/create/<contenido>/<usuarioId>/<eventoId>')
@@ -186,10 +186,11 @@ def deletedByAdmin(id):
 @app.route('/comentario/eliminar/<id>')
 def deleteComment(id):
     comentario = db.session.query(Comentario).get(id)
+    eventID= comentario.eventoId
     db.session.delete(comentario)
     db.session.commit()
     flash('El comentario ha sido borrado con exito!')
-    return redirect(url_for('regular'))
+    return redirect(url_for('eventoad',id=eventID))
 
 
 
