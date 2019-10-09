@@ -128,7 +128,7 @@ def mostrarevento(id):
     if form.validate_on_submit():
         flash('Comentario Enviado')
         pCommentary(form)
-        createComment(form.comentario.data,301,111)
+        createComment(form.comentario.data,301,id)
         return redirect(url_for('mostrarevento',id=id))
     return render_template('evento.html', form=form, id=id, evento=evento, commentList=commentList, mostrarevento=mostrarevento,listaeventos=listaeventos)
 @app.route('/comentary/create/<contenido>/<usuarioId>/<eventoId>')
