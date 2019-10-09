@@ -10,7 +10,7 @@
       <div class="creacion">
 
         <h1 id="registrotitulo">Crear Evento</h1>
-        <form method="POST" action="{{ url_for(destino) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ url_for(destino,id=evento["eventoId"])}}" enctype="multipart/form-data">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
 

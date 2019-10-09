@@ -1,4 +1,4 @@
-{% from "macros.html" import evento_comentario,mostrarevents,expanded_event %}
+{% from "macros.html" import standarComments,mostrarevents,expanded_event %}
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
 {% extends "hyf.html" %}
 {% block estilos %}
@@ -9,7 +9,6 @@
   <div class="row">
     <div class="col-md-12">
       <div class="Entorno">
-
         {{expanded_event(evento)}}
         <div class="commentbox">
           <div class="row">
@@ -20,80 +19,56 @@
             </div>
             <div class="col-md-2">
             </div>
-
           </div>
           <div class="row">
             <div class="col-md-2">
             </div>
             <div class="col-md-8">
-              <button type="button" href="{{url_for('user')}}" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
-              <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <button type="button" href="{{url_for('user')}}" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+                <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
+                    <form method="POST" action="{{ url_for('mostrarevento', id=evento["eventoId"]) }}" enctype="multipart/form-data">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                      <div class="modal-content modalcoment2">
+                        <div class="modal-header">
+                          <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Comentar Evento</h3>
+                          <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="ekis">&times;</span>
+                          </button>
+                        </div>
 
-                <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
-
-                  <form method="POST" action="{{ url_for('mostrarevento', id=evento["id"]) }}" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-
-                    <div class="modal-content modalcoment2">
-                      <div class="modal-header">
-                        <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Comentar Evento</h3>
-                        <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true" class="ekis">&times;</span>
-                        </button>
-                      </div>
-
-                      <div class="modal-body">
-                        <div class="comentario">
-                          {{ mostrar_campo(formulario.comentario, class='form-control', style="width: 490px; height: 170px" )}}
+                        <div class="modal-body">
+                          <div class="comentario">
+                            {{ mostrar_campo(form.comentario, class='form-control', style="width: 490px; height: 170px" )}}
+                          </div>
+                        
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>
+                          {{ mostrar_campo_submit(form.submit , class='btn btn-danger enviar')}}
                         </div>
                       </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>
-                        {{ mostrar_campo_submit(formulario.submit , class='btn btn-danger enviar')}}
-                      </div>
-                    </div>
-                  </form>
-                </div>
+                    </form>
+                  </div>
               </div>
               <div class="col-md-2">
               </div>
+              <div class="row">
+                <div class="col-md-12">
 
+
+                  {% for comentario in commentList %}
+                  {{ standarComments(comentario) }}
+                  {% endfor %}
+                </div>
+              </div>
             </div>
-            <div class="row">
-
-            </div>
-
-
 
           </div>
-
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-
-            <!--<div class="media">
-                    <div class="media-body">
-                      <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
-                      officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
-                      itaque.
-                      <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
-                      officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
-                      itaque.
-                      <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
-                      officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
-                      itaque.
-                    </div>
-                  </div>-->
-            {% for comentario in listacomentarios %}
-            {{ evento_comentario(comentario) }}
-            {% endfor %}
+          </div>
           </div>
         </div>
-      </div>
-
         </div>
+
 
       {% endblock %}

@@ -1,7 +1,7 @@
 # - *- coding: utf- 8 - *-
 from flask_wtf import FlaskForm #Importa funciones de formulario
 from wtforms import StringField, TextField , HiddenField, PasswordField, TextAreaField, SelectField, SubmitField #Importa campos
-from wtforms.fields.html5 import EmailField,DateField,TimeField #Importa campos HTML
+from wtforms.fields.html5 import EmailField,DateField,TimeField,DateTimeField #Importa campos HTML
 from wtforms import validators #Importa validaciones
 from flask_wtf.file import FileField, FileRequired, FileAllowed #Importa funciones, validaciones y campos
 
@@ -94,14 +94,16 @@ class Navegation(FlaskForm):
     #Definición de campo select
         opciones = SelectField('Opción', choices=lista_opciones)
 
-        submit = SubmitField("")
+        submit = SubmitField("Filtrar")
 class Comentarios(FlaskForm):
     comentario = StringField('Comentario',
     [
         #Definición de validaciones
         validators.Required(message = "Comentario")
     ])
+    fechahora= DateField('Fecha:')
     submit = SubmitField("Enviar")
+
 
 class EventoCrear(FlaskForm):
     def opcional(field):

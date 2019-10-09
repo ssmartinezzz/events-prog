@@ -10,6 +10,7 @@ class Evento(db.Model):
     #Relación entre evento y usuario
     usuarioId=db.Column(db.Integer, db.ForeignKey('usuario.usuarioId'), nullable=False)
     usuario=db.relationship("Usuario", back_populates="eventos")
+    aprobado=db.Column(db.Boolean,nullable=False, default=False)
     #Relación entre evento y comentario
     comentarios=db.relationship("Comentario", back_populates="evento", cascade="all,delete-orphan") #se pide la lista de comentarios
 

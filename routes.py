@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 from funciones import *
 from flask import Flask
 from flask import render_template
@@ -7,7 +8,7 @@ from flask import flash  # importar para mostrar mensajes flash
 # importar para permitir redireccionar y generar url
 from flask import redirect, url_for
 from forms_classes import *  # importar clase de formulario
-import datetime  # importar funciones de fecha
+from datetime import datetime  # importar funciones de fecha
 # Importa seguridad nombre de archivo
 from werkzeug.utils import secure_filename
 import os.path
@@ -62,9 +63,12 @@ def menu():
 
 @app.route('/mis-eventos')
 def eventos():
-    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==282).all()
-
+    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==292).all()
     return render_template('my-events.html',listaeventos=listaeventos)
+
+
+
+
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
 @app.route('/creacion', methods=["POST", "GET"])
@@ -81,9 +85,9 @@ def crear():
     return render_template('create-event.html', formulario=formulario, destino="crear")
 
 #Ruta que nos permite actualizar los datos de un evento traido de db, donde al ser igualados y llenados en el formulario podemos efectuar los cambios
-@app.route('/update', methods=["POST", "GET"])
-def actualizar():
-    evento = db.session.query(Evento).get(108)
+@app.route('/update/evento/<id>', methods=["POST", "GET"])
+def actualizar(id):
+    evento = db.session.query(Evento).get(id)
     formulario=EventoCrear(obj=evento)
     EventoCrear.opcional(formulario.imagen)
     if formulario.validate_on_submit():
@@ -95,7 +99,8 @@ def actualizar():
         evento.tipo=formulario.opciones.data
         evento.descripcion=formulario.desc.data
         evento.imagen=formulario.imagen.data
-        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,formulario.imagen.data,formulario.opciones.data,203)
+
+        actualizareve(evento)
         return redirect(url_for('index'))
     else:
             formulario.titulo.data=evento.nombre
@@ -104,7 +109,12 @@ def actualizar():
             formulario.opciones.data=evento.tipo
             formulario.desc.data=evento.descripcion
             formulario.imagen.data=evento.imagen
-    return render_template('create-event.html', formulario=formulario, destino="actualizar")
+    return render_template('create-event.html', formulario=formulario, destino="actualizar",evento=evento)
+@app.route('/evento/actualizar/<evento>')
+def actualizareve(evento):
+    print("Actualizando evento!")
+    db.session.add(evento)
+    db.session.commit()
 
 
 # RUTA Y FUNCION PARA LISTAR LOS EVENTOS CON LOS COMENTARIOS Y CREARLOS
@@ -112,14 +122,24 @@ def actualizar():
 def mostrarevento(id):
     listaeventos = listar_eventos()
     evento = db.session.query(Evento).get(id)
-    listacomentarios = comentarios() #Este es el csv
-    formulario = Comentarios()
-    if formulario.validate_on_submit():
+    #listacomentarios = comentarios() #Este es el csv
+    commentList =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
+    form = Comentarios()
+    if form.validate_on_submit():
         flash('Comentario Enviado')
-        pCommentary(formulario)
-        return redirect(url_for('mostrarevento',id=evento['eventoId']))
+        pCommentary(form)
+        createComment(form.comentario.data,282,11)
+        return redirect(url_for('mostrarevento',id=id))
+    return render_template('evento.html', form=form, id=id, evento=evento, commentList=commentList, mostrarevento=mostrarevento,listaeventos=listaeventos)
+@app.route('/comentary/create/<contenido>/<usuarioId>/<eventoId>')
+def createComment(contenido,usuarioId,eventoId):
+    usuario=db.session.query(Usuario).get(usuarioId)
+    evento=db.session.query(Evento).get(eventoId)
+    fechahora=db.func.current_timestamp()
+    comment = Comentario(contenido=contenido,fechahora=fechahora,evento=evento,usuario=usuario)
+    db.session.add(comment)
+    db.session.commit()
 
-    return render_template('evento.html', formulario=formulario, id=id, evento=evento, listacomentarios=listacomentarios, mostrarevento=mostrarevento,listaeventos=listaeventos)
 
 
 @app.route('/user')
@@ -134,60 +154,51 @@ def menuadmin():
 #Ruta que le permite visibilizar los eventos disponibles a controlar.
 @app.route('/admin/regular/')
 def regular():
-    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==282).all()
+    listaeventos=db.session.query(Evento).all()
     #evento=db.session.query(Evento).filter(Evento.eventoId==id).one()
     return render_template('admineventos.html',listaeventos=listaeventos)
 
-#Ruta para que el admin regule un evento "x", y que en el mismo utilizando el formulario de hacer comentario pueda hacer un comentario.
+#Ruta para que el admin regule un evento "x".
 @app.route('/admin/evento/<id>',methods=["POST","GET"])
 def eventoad(id):
-    #listaeventos=listar_eventos()
-    formulario =Comentarios()
-    comentadmin = comentarios()
+    comentadmin = db.session.query(Comentario).filter(Comentario.eventoId ==id).order_by(Comentario.fechahora).all()
     evento = db.session.query(Evento).get(id)
- #Este es el csv
-    if formulario.validate_on_submit():
-        flash('Comentario Enviado')
-        pCommentary(formulario)
-        return redirect(url_for('eventoad',id=evento['eventoId']))
-    return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento,formulario=formulario)
+    return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento)
 
+
+#Funcion que permite por el panel de mis eventos eliminar el evento que se toque con el respectivo id
+@app.route('/evento/eliminar/<id>')
 def deleteEvent(id):
-    evento = db.session.query(Evento).get(id)
+    evento= db.session.query(Evento).get(id)
     db.session.delete(evento)
     db.session.commit()
-    flash('Evento eliminado con exito!')
+    flash('Evento eliminado exitosamente!')
+    return redirect(url_for('eventos'))
+@app.route('/eventoadmin/eliminar/<id>')
+def deletedByAdmin(id):
+    evento= db.session.query(Evento).get(id)
+    db.session.delete(evento)
+    db.session.commit()
+    flash('Evento eliminado exitosamente!')
     return redirect(url_for('regular'))
 
 
-
-
-
-
-@app.route('/comentario/list')
-def listarComentarios():
-    # EJ: persona/list
-    comentarios = db.session.query(Comentario).all()
-    return render_template('comentarios.html',comentarios=comentarios,filtro="")
-
-@app.route('/comentario/crear/<comentarioId>/<texto>/<fechahora>')
-def crearComentario(comentarioId,texto,fechahora):
-    comentario = Comentario(comentarioId=comentarioId,texto=texto,fechahora=fechahora)
-    db.session.add(comentario)
+@app.route('/comentario/eliminar/<id>')
+def deleteComment(id):
+    comentario = db.session.query(Comentario).get(id)
+    db.session.delete(comentario)
     db.session.commit()
-    return render_template('comentario.html',comentario=comentario)
+    flash('El comentario ha sido borrado con exito!')
+    return redirect(url_for('regular'))
+
+
 
 @app.route('/comentario/getById/<id>')
 def getComentarioById(id):
     comentario =  db.session.query(Comentario).get(id)
     return render_template('comentario.html',comentario=comentario)
 
-@app.route('/comentario/eliminar/<id>')
-def eliminarComentario(id):
-    comentario = db.session.query(Comentario).get(id)
-    db.session.delete(comentario)
-    db.session.commit()
-    return redirect(url_for('listarComentarios'))
+
 
 @app.route('/usuario/eliminar/<id>')
 def deleteUsuario(id):

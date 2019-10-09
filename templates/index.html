@@ -7,8 +7,8 @@
 {% block contenido %}
 
 <div class="container" id="filtro">
-	<div class="row">
-		<form method="POST" action="{{ url_for("index") }}">
+
+		<form method="POST" action="{{ url_for('index',pag=1) }}" enctype="multipart/form-data">
 			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 			<div class="form-inline">
 				<div class="col-md-3">
@@ -23,12 +23,20 @@
 				<div class="col-md-3">
 					{{mostrar_campo(formularionav.opciones, class='form-control')}}
 				</div>
-				<div class="row">
-					{{ mostrar_campo_submit(formularionav.submit , class='btn btn-primary')}}
-				</div>
+
+			</div>
+			<div class="form-inline">
+				<div class="col-md-4">
+					</div>
+					<div class="col-md-4">
+						{{ mostrar_campo_submit(formularionav.submit , class='btn btn-primary')}}
+						</div>
+						<div class="col-md-4">
+							</div>
+
 			</div>
 		</form>
-	</div>
+
 </div>
 
 </div>

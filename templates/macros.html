@@ -42,7 +42,7 @@
 </div>
 {% endmacro %}
 
-{% macro evento_comentario (comentario) %}
+{% macro standarComments (comentario) %}
 
 <div class="row">
   <div class="col-md-2">
@@ -50,9 +50,9 @@
   <div class=col-md-8>
     <div class="media">
       <div class="media-body">
-        <h3 class="mt-0 font-weight-bold blue-text">{{comentario["autor"]}}</h3>
+        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario.usuario.nombre}}</h3>
         <textarea class="form-control">{{comentario["contenido"]}}</textarea>
-        <h3 class="mt-0 font-weight-bold blue-text"></h3>
+        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
       </div>
     </div>
@@ -70,20 +70,11 @@
   <div class=col-md-8>
     <div class="media">
       <div class="media-body">
-        <h3 class="mt-0 font-weight-bold blue-text">{{comentario["autor"]}}</h3>
+        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario["usuarioId"]}}</h3>
         <textarea class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
-        <h3 class="mt-0 font-weight-bold blue-text"></h3>
-        <button class="submit">Eliminar comentario</button>
-      </div>
-    </div>
-    <div class="media mt-3 shadow-textarea">
-      <div class="media-body">
-        <h3 class="mt-0 font-weight-bold blue-text">@administrador:</h3>
-        <div class="form-group basic-textarea rounded-corners">
-          <textarea class="form-control z-depth-1" id="exampleFormControlTextarea345" rows="3" placeholder="Comentar..."></textarea>
-          <button type="submit">Responder</button>
-        </div>
+        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
+        <a type="button"class="btn-btn-danger" href="{{url_for('deleteComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
       </div>
     </div>
   </div>
@@ -176,7 +167,7 @@
 
     </div>
     <div class="col-md-3">
-      <button class="btn btn-danger" type="submit">Eliminar</button>
+      <a type="button" class="btn btn-danger" href="{{url_for('deleteEvent',id=evento["eventoId"])}}">Eliminar</a>
 
     </div>
     <div class="col-md-3">
