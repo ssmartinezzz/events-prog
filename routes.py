@@ -22,7 +22,7 @@ app.secret_key = 'esta_es_la_clave_secreta'
 def mysql_query(query):
     return query.statement.compile(compile_kwargs={"literal_binds": True})
 
-logueado= True
+logueado= False
 admin= False
 if logueado is True:
     admin = False
