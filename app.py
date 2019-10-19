@@ -1,13 +1,29 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy #Incluye sqlAlchemy
+from flask_mail import Mail, Message #
 from sqlalchemy import or_
+import os
+from dotenv import load_dotenv
+
 
 app = Flask(__name__)
+load_dotenv()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 #Configuración de conexion de base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@localhost/programacionej'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+os.getenv('DB_USERNAME')+':'+os.getenv('DB_PASS')+'@localhost/programacionej'
 #Instancia que representa la base de datos
+app.config['MAIL_HOSTNAME'] = 'localhost'
+#Dirección del servidor mail utilizado
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+#Puerto del servidor mail saliente SMTP
+app.config['MAIL_PORT'] = 587
+#Especificar conexión con SSL/TLS
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['FLASKY_MAIL_SENDER'] = 'EventZ <no-replyeventZ@gmail.com>'
 db = SQLAlchemy(app)
+email= Mail(app)
 
 #Ejecutar pip install -r requirements.txt
 

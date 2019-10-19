@@ -8,16 +8,16 @@ from flask import flash  # importar para mostrar mensajes flash
 # importar para permitir redireccionar y generar url
 from flask import redirect, url_for
 from forms_classes import *  # importar clase de formulario
-  # importar funciones de fecha
-# Importa seguridad nombre de archivo
 from werkzeug.utils import secure_filename
 import os.path
 from app import db
 from models import *
+import os
+from emailfunctions import *
 
 app = Flask(__name__)
 csrf = CSRFProtect(app)
-app.secret_key = 'esta_es_la_clave_secreta'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 def mysql_query(query):
     return query.statement.compile(compile_kwargs={"literal_binds": True})
@@ -26,6 +26,9 @@ logueado= False
 admin= False
 if logueado is True:
     admin = False
+if admin is True:
+    logueado =None
+
 
 @app.route('/')
 #Ruta sin filtro aplicado
@@ -70,6 +73,9 @@ def registro():
         flash('Usuario registrado exitosamente')  # Mostrar mensaje
         mostrar_datos(formulario)  # Imprimir datos por consola
         createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)
+        email=formulario.email.data
+        sendMail(email,'Su cuenta de EventZ ha sido creada!','mail/newaccount')
+        print(formulario.email.data)#terminal
         return redirect(url_for('index'))
     return render_template('registro.html', formulario=formulario,logueado=logueado,admin=admin)
 
@@ -197,6 +203,9 @@ def eventoad(id):
 def deletedByAdmin(id):
     evento= db.session.query(Evento).get(id)
     db.session.delete(evento)
+    email=evento.usuario.email
+    sendMail(email,'Su evento ha sido borrado!','mail/mensaje')
+    print(email)
     db.session.commit()
     flash('Evento eliminado exitosamente!')
     return redirect(url_for('regular'))
@@ -205,8 +214,13 @@ def deletedByAdmin(id):
 def checkEvent(id):
     evento=db.session.query(Evento).get(id)
     evento.aprobado=True
+    email=evento.usuario.email
     actualizareve(evento)
     flash('Evento aprobado!')
+    sendMail(email,'Su evento ha sido aprobado por el administrador!','mail/event-confirm')
+    print(email)
+    db.session.commit()
+
     return redirect(url_for('regular',evento=evento,logueado=logueado,admin=admin))
 #Ruta que le permite al administrador del sistema eliminar el comentario deseado de un evento "x"
 @app.route('/comentario/eliminar/<id>')

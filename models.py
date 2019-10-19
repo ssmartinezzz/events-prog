@@ -45,6 +45,3 @@ class Comentario(db.Model):
     evento= db.relationship("Evento", back_populates="comentarios")
     def __repr__(self):
         return '<Comentario: %r %r %r >' % (self.comentarioId,self.texto, self.fechahora)
-
-#db.drop_all() #Elimina las tablas de la db
-db.create_all() #Crea las tablas de la db a patir de los modelos
