@@ -51,21 +51,21 @@
           <div class="form-row">
             <div class="form-group col-md-2">
             </div>
-            {{current_user.is_authenticated}}
 
-            {% if current_user.is_autenticathed %}
+            {% if current_user.is_authenticated %}
 
-            chau
+
             <div class="form-group col-md-4">
-              <a >Welcome back user!</a>
+              <p >Welcome back {{current_user.nombre}}!</p>
             </div>
             <div class="form-group col-md-4">
             <a type=button class="btn btn-danger" href="{{url_for('logout')}}">Logout</a>
             </div>
             {% endif %}
 
-            {% if  not current_user.is_autenticathed  %}
-            hola
+            {% if  not current_user.is_authenticated  %}
+
+
             <div class="form-group col-md-4">
 
               <a type=button class="btn btn-danger" href="{{url_for('logIn')}}">Login</a>
