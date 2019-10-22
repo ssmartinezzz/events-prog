@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy #Incluye sqlAlchemy
 from flask_mail import Mail, Message #
 from sqlalchemy import or_
 import os
+from flask_login import LoginManager
 from dotenv import load_dotenv
 
 
@@ -24,8 +25,9 @@ app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['FLASKY_MAIL_SENDER'] = 'EventZ <no-replyeventZ@gmail.com>'
 db = SQLAlchemy(app)
 email= Mail(app)
-
-#Ejecutar pip install -r requirements.txt
+login_manager=LoginManager(app)
+def admin_required():
+	return current_user.es_admin()
 
 
 if __name__ == '__main__': #Asegura que solo se ejectue el servidor cuando se ejecute el script directamente

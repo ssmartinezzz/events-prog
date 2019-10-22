@@ -35,7 +35,7 @@ def pCommentary(formulario):
 
 
 def getUser(formulariolog):
-    print(formulariolog.usuario.data)
+    print(formulariolog.email.data)
     print(formulariolog.password.data)
 def navbar(formularionav):
     print(formularionav.fechainicio.data)
@@ -61,7 +61,7 @@ def createEvent(nombre,fecha,hora,descripcion,imagen,tipo,usuarioId):
 def createUser(nombre,apellido,email,password,admin):
     #EJ: /persona/crear/Marcos/Gonzales/1999-05-01
     #Crear una persona
-    usuario = Usuario(nombre=nombre, apellido=apellido,email=email,password=password,admin=admin)
+    usuario = Usuario(nombre=nombre, apellido=apellido,email=email,notepassword=password,admin=admin)
     admin=False
     #Agregar a db
     db.session.add(usuario)

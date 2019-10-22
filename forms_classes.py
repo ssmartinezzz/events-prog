@@ -4,6 +4,7 @@ from wtforms import StringField, TextField , HiddenField, PasswordField, TextAre
 from wtforms.fields.html5 import EmailField,DateField,TimeField,DateTimeField #Importa campos HTML
 from wtforms import validators #Importa validaciones
 from flask_wtf.file import FileField, FileRequired, FileAllowed #Importa funciones, validaciones y campos
+from app import app, db
 
 #Clase de Registro
 class Registro(FlaskForm):
@@ -53,9 +54,9 @@ class Registro(FlaskForm):
 
 class Logeo(FlaskForm):
 
-        usuario = TextField('Usuario',
+        email = TextField('Email',
         [
-            validators.Required(message = "Completar nombre de usuariousuario"),
+            validators.Required(message = "Email requerido"),
             validators.length(min=4, max=25, message='La longitud del nombre de usuario no es válida'),
             #Validación definida por el usuario
 
@@ -68,6 +69,9 @@ class Logeo(FlaskForm):
             #validators.EqualTo('confirmar', message='La contraseña no coincide')
         ])
         submit = SubmitField("Iniciar sesion")
+
+
+
 
 class Navegation(FlaskForm):
 

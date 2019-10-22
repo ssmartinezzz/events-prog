@@ -37,7 +37,7 @@
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="{{url_for('index')}}">Inicio <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{{url_for('index')}}">Inicio </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('menu')}}">Menu</a>
@@ -51,7 +51,21 @@
           <div class="form-row">
             <div class="form-group col-md-2">
             </div>
-            {% if (logueado is sameas false) %}
+            {{current_user.is_authenticated}}
+
+            {% if current_user.is_autenticathed %}
+
+            chau
+            <div class="form-group col-md-4">
+              <a >Welcome back user!</a>
+            </div>
+            <div class="form-group col-md-4">
+            <a type=button class="btn btn-danger" href="{{url_for('logout')}}">Logout</a>
+            </div>
+            {% endif %}
+
+            {% if  not current_user.is_autenticathed  %}
+            hola
             <div class="form-group col-md-4">
 
               <a type=button class="btn btn-danger" href="{{url_for('logIn')}}">Login</a>
@@ -63,16 +77,9 @@
             </div>
             {% endif %}
 
-            {% if (logueado is sameas true) %}
-            <div class="form-group col-md-4">
-              <a >Welcome back user!</a>
-            </div>
-            <div class="form-group col-md-4">
-            <a type=button class="btn btn-danger" href="">Logout</a>
-            </div>
-            {% endif %}
 
-            {% if (admin is sameas true) %}
+
+            {% if  current_user.is_admin %}
             <div class="form-group col-md-4">
 
               <a >Welcome back admin!</a>
