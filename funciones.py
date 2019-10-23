@@ -62,7 +62,6 @@ def createUser(nombre,apellido,email,password,admin):
     #EJ: /persona/crear/Marcos/Gonzales/1999-05-01
     #Crear una persona
     usuario = Usuario(nombre=nombre, apellido=apellido,email=email,notepassword=password,admin=admin)
-    admin=False
     #Agregar a db
     db.session.add(usuario)
     #Hacer commit de los cambios

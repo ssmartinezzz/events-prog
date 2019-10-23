@@ -30,6 +30,7 @@ def unauthorized_callback():
 
 
 
+
 @app.route('/logout')
 #Limitar el acceso a los usuarios registrados
 @login_required
@@ -201,74 +202,112 @@ def deleteEvent(id):
     return redirect(url_for('eventos'))
 
 
-@app.route('/user')
-def user():
-    return render_template('evento.html', id=id, evento=evento, listacomentarios=listacomentarios,logueado=logueado,admin=admin)
-
-
 "RUTAS QUE SOLO PUEDE ACCEDER EL ADMINISTRADOR DEL SITIO, CONTIENE LAS FUNCIONES"
 
 #Ruta que muestra el menu de opciones disponibles al administrador
 @app.route('/admin/menu')
+@login_required
 def menuadmin():
-    return render_template('admin-menu.html')
+    if current_user.is_admin==False:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+
+    else:
+        return render_template('admin-menu.html')
 
 #Ruta que le permite visibilizar los eventos disponibles a controlar.
 @app.route('/admin/regular/')
+@login_required
 def regular():
-    listaeventos=db.session.query(Evento).all()
-    #evento=db.session.query(Evento).filter(Evento.eventoId==id).one()
-    return render_template('admineventos.html',listaeventos=listaeventos,logueado=logueado,admin=admin)
+    if current_user.is_admin==False:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+
+    else:
+        listaeventos=db.session.query(Evento).all()
+        return render_template('admineventos.html',listaeventos=listaeventos)
 
 #Ruta para que el admin regule un evento "x".
 @app.route('/admin/evento/<id>',methods=["POST","GET"])
+@login_required
 def eventoad(id):
-    comentadmin = db.session.query(Comentario).filter(Comentario.eventoId ==id).order_by(Comentario.fechahora).all()
-    evento = db.session.query(Evento).get(id)
-    return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento)
+    if current_user.is_admin==False:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+    else:
+        comentadmin = db.session.query(Comentario).filter(Comentario.eventoId ==id).order_by(Comentario.fechahora).all()
+        evento = db.session.query(Evento).get(id)
+        return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento)
 
 
 #Ruta que elimina el evento que el admin desee, (NO ES DESAPROBAR)
 @app.route('/eventoadmin/eliminar/<id>')
+@login_required
 def deletedByAdmin(id):
-    evento= db.session.query(Evento).get(id)
-    db.session.delete(evento)
-    email=evento.usuario.email
-    sendMail(email,'Su evento ha sido borrado!','mail/mensaje')
-    print(email)
-    db.session.commit()
-    flash('Evento eliminado exitosamente!')
-    return redirect(url_for('regular'))
+    if current_user.is_admin==False:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+    else:
+        evento= db.session.query(Evento).get(id)
+        db.session.delete(evento)
+        email=evento.usuario.email
+        sendMail(email,'Su evento ha sido borrado!','mail/mensaje')
+        print(email)
+        db.session.commit()
+        flash('Evento eliminado exitosamente!')
+        return redirect(url_for('regular'))
+
+
 #El administrador es capaz de aprobar el evento mediante esta funcion
 @app.route('/admin/evento/validate/<id>')
+@login_required
 def checkEvent(id):
-    evento=db.session.query(Evento).get(id)
-    evento.aprobado=True
-    email=evento.usuario.email
-    actualizareve(evento)
-    flash('Evento aprobado!')
-    sendMail(email,'Su evento ha sido aprobado por el administrador!','mail/event-confirm')
-    print(email)
-    db.session.commit()
+    if current_user.is_admin==False:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+    else:
+        evento=db.session.query(Evento).get(id)
+        evento.aprobado=True
+        email=evento.usuario.email
+        actualizareve(evento)
+        flash('Evento aprobado!')
+        sendMail(email,'Su evento ha sido aprobado por el administrador!','mail/event-confirm')
+        print(email)
+        db.session.commit()
+        return redirect(url_for('regular',evento=evento))
 
-    return redirect(url_for('regular',evento=evento))
+
 #Ruta que le permite al administrador del sistema eliminar el comentario deseado de un evento "x"
 @app.route('/comentario/eliminar/<id>')
+@login_required
 def deleteComment(id):
-    comentario = db.session.query(Comentario).get(id)
-    eventID= comentario.eventoId
-    db.session.delete(comentario)
-    db.session.commit()
-    flash('El comentario ha sido borrado con exito!','warning')
-    return redirect(url_for('eventoad',id=eventID))
+    if current_user.is_admin==False:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+
+    else:
+        comentario = db.session.query(Comentario).get(id)
+        eventID= comentario.eventoId
+        db.session.delete(comentario)
+        db.session.commit()
+        flash('El comentario ha sido borrado con exito!','warning')
+        return redirect(url_for('eventoad',id=eventID))
 
 
+
+"""La ruta no tiene template todavia y no esta en uso
 @app.route('/usuario/eliminar/<id>')
+@login_required
 def deleteUsuario(id):
-    usuario = db.session.query(Usuario).get(id)
-    db.session.delete(usuario)
-    db.session.commit()
-    return redirect(url_for('listarUsuarios'))
+    if current_user.is_admin==True:
+        usuario = db.session.query(Usuario).get(id)
+        db.session.delete(usuario)
+        db.session.commit()
+        return redirect(url_for('listarUsuarios'))
+    else:
+        flash('Forbidden route, unable to access!')
+        return redirect(url_for('index'))
+"""
 
 
 

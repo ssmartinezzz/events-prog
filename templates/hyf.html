@@ -39,9 +39,18 @@
         <li class="nav-item active">
           <a class="nav-link" href="{{url_for('index')}}">Inicio </a>
         </li>
+
         <li class="nav-item">
+          {% if current_user.is_admin  %}
+          <a class="nav-link" href="{{url_for('menuadmin')}}">Menu admin</a>
+          {% endif %}
+          {% if  current_user.is_authenticated and current_user.is_admin==False %}
           <a class="nav-link" href="{{url_for('menu')}}">Menu</a>
+          {% endif %}
+
+
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="#"></a>
         </li>
@@ -74,20 +83,6 @@
 
             <div class="form-group col-md-4">
               <a type=button class="btn btn-danger" href="{{url_for('registro')}}">Registrarse</a>
-            </div>
-            {% endif %}
-
-
-
-            {% if  current_user.is_admin %}
-            <div class="form-group col-md-4">
-
-              <a >Welcome back admin!</a>
-
-            </div>
-
-            <div class="form-group col-md-4">
-            <a type=button class="btn btn-danger" href="">Logout</a>
             </div>
             {% endif %}
 

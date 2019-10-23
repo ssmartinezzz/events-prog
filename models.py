@@ -43,6 +43,11 @@ class Usuario(UserMixin,db.Model):
         self.password = generate_password_hash(notepassword)
     def get_id(self):
            return (self.usuarioId)
+    def is_admin(self):
+        aux= False
+        if self.admin == 1:
+            aux = True
+        return aux
     #Al verififcar pass comparar hash del valor ingresado con el de la db
     def verificar_pass(self, notepassword):
         return check_password_hash(self.password, notepassword)
