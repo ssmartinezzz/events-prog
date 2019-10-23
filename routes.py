@@ -38,7 +38,11 @@ def logout():
     #Insntanciar formulario de Login
     formularionav=Navegation()
     formulariolog = Logeo()
-    return render_template('login.html', formulariolog=formulariolog)    
+    pag=1
+    pag_tam=6
+    eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
+    flash('Logged off!','warning')
+    return render_template('index.html', formulariolog=formulariolog,formularionav=formularionav,eventos=eventos)
 
 
 
@@ -72,9 +76,7 @@ def logIn():
     formulariolog = Logeo()  # Instanciar formulario de registro
     if formulariolog.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         usuario=Usuario.query.filter_by(email=formulariolog.email.data).first()
-        print("antes del if")
         if usuario is not None and usuario.verificar_pass(formulariolog.password.data):
-            print("pasa el if")
             login_user(usuario,False)
             flash('Usuario Logeado exitosamente')  # Mostrar mensaje
             getUser(formulariolog)  # Imprimir datos por consola
@@ -101,6 +103,7 @@ def registro():
 
 
 @app.route('/menu')
+@login_required
 def menu():
     return render_template('main-menu.html')
 
@@ -108,7 +111,7 @@ def menu():
 @app.route('/mis-eventos')
 @login_required
 def eventos():
-    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==298).all()
+    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
     return render_template('my-events.html',listaeventos=listaeventos)
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
@@ -122,7 +125,7 @@ def crear():
         f.save(os.path.join('static/Fondo/', filename))
         flash("Evento creado exitosamente!")
         showEve(formulario)
-        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,298)
+        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,current_user.usuarioId)
         return redirect(url_for('eventos'))
     return render_template('create-event.html', formulario=formulario, destino="crear")
 
@@ -173,7 +176,7 @@ def mostrarevento(id):
     if form.validate_on_submit():
         flash('Comentario Enviado')
         pCommentary(form)
-        createComment(form.comentario.data,301,id)
+        createComment(form.comentario.data,current_user.usuarioId,id)
         return redirect(url_for('mostrarevento',id=id))
     return render_template('evento.html', form=form, id=id, evento=evento, commentList=commentList, mostrarevento=mostrarevento,listaeventos=listaeventos)
 @app.route('/comentary/create/<contenido>/<usuarioId>/<eventoId>')
