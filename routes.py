@@ -95,7 +95,7 @@ def registro():
     if formulario.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         flash('Usuario registrado exitosamente')  # Mostrar mensaje
         mostrar_datos(formulario)  # Imprimir datos por consola
-        createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)
+        createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=True)
         email=formulario.email.data
         sendMail(email,'Su cuenta de EventZ ha sido creada!','mail/newaccount')
         print(formulario.email.data)#terminal
@@ -208,7 +208,7 @@ def deleteEvent(id):
 @app.route('/admin/menu')
 @login_required
 def menuadmin():
-    if current_user.is_admin==False:
+    if not current_user.is_admin==False:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
 
@@ -219,7 +219,7 @@ def menuadmin():
 @app.route('/admin/regular/')
 @login_required
 def regular():
-    if current_user.is_admin==False:
+    if not current_user.is_admin==False:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
 
@@ -244,7 +244,7 @@ def eventoad(id):
 @app.route('/eventoadmin/eliminar/<id>')
 @login_required
 def deletedByAdmin(id):
-    if current_user.is_admin==False:
+    if not current_user.is_admin==False:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
     else:
@@ -262,7 +262,7 @@ def deletedByAdmin(id):
 @app.route('/admin/evento/validate/<id>')
 @login_required
 def checkEvent(id):
-    if current_user.is_admin==False:
+    if not current_user.is_admin==False:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
     else:
@@ -281,7 +281,7 @@ def checkEvent(id):
 @app.route('/comentario/eliminar/<id>')
 @login_required
 def deleteComment(id):
-    if current_user.is_admin==False:
+    if not current_user.is_admin==False:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
 

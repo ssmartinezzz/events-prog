@@ -41,12 +41,13 @@
         </li>
 
         <li class="nav-item">
-          {% if current_user.is_admin  %}
-          <a class="nav-link" href="{{url_for('menuadmin')}}">Menu admin</a>
-          {% endif %}
-          {% if  current_user.is_authenticated and current_user.is_admin==False %}
+          {% if not  current_user.is_admin==False %}
           <a class="nav-link" href="{{url_for('menu')}}">Menu</a>
           {% endif %}
+          {% if current_user.is_admin==True  %}
+          <a class="nav-link" href="{{url_for('menuadmin')}}">Menu admin</a>
+          {% endif %}
+
 
 
         </li>
