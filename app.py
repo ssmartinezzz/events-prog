@@ -5,7 +5,7 @@ from sqlalchemy import or_
 import os
 from flask_login import LoginManager
 from dotenv import load_dotenv
-
+from apiroutes import *
 
 app = Flask(__name__)
 load_dotenv()
@@ -32,4 +32,7 @@ def admin_required():
 
 if __name__ == '__main__': #Asegura que solo se ejectue el servidor cuando se ejecute el script directamente
     from routes import *
+
+
+
     app.run(port = 8000, debug = True)

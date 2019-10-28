@@ -241,7 +241,7 @@ def eventoad(id):
 
 
 #Ruta que elimina el evento que el admin desee, (NO ES DESAPROBAR)
-@app.route('/eventoadmin/eliminar/<id>')
+@app.route('/admin/evento/eliminar/<id>',methods=['DELETE'])
 @login_required
 def deletedByAdmin(id):
     if not current_user.is_admin==False:
@@ -251,7 +251,7 @@ def deletedByAdmin(id):
         evento= db.session.query(Evento).get(id)
         db.session.delete(evento)
         email=evento.usuario.email
-        sendMail(email,'Su evento ha sido borrado!','mail/mensaje')
+        sendMail(email,'Su evento ha sido borrado!','mail/deleted')
         print(email)
         db.session.commit()
         flash('Evento eliminado exitosamente!')
@@ -259,7 +259,7 @@ def deletedByAdmin(id):
 
 
 #El administrador es capaz de aprobar el evento mediante esta funcion
-@app.route('/admin/evento/validate/<id>')
+@app.route('/admin/evento/validate/<id>', methods=['POST'])
 @login_required
 def checkEvent(id):
     if not current_user.is_admin==False:

@@ -2,6 +2,8 @@ from app import db,login_manager
 from werkzeug.security import generate_password_hash, check_password_hash #Permite generar y verificar pass con hash encriptadas
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer # Genera los token de confirmación para ccomparar token de logeo
 from flask_login import UserMixin, LoginManager
+from flask import url_for
+
 class Evento(db.Model):
     eventoId = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(90), nullable=False)
@@ -16,10 +18,31 @@ class Evento(db.Model):
     aprobado=db.Column(db.Boolean,nullable=False, default=False)
     #Relación entre evento y comentario
     comentarios=db.relationship("Comentario", back_populates="evento", cascade="all,delete-orphan") #se pide la lista de comentarios
-
-
     def __repr__(self):
         return '<Evento: %r %r %r %r %r %r %r %r >' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo,self.aprobado)
+    #Convertir objeto en JSON
+    def a_json(self):
+        evento_json = {
+            'eventoId': url_for('listEventsbyApi', id=self.eventoId, _external=True), #Ruta para acceder a la persona
+            'nombre': self.nombre,
+            'fecha': self.fecha,
+            #'hora': self.hora,
+            'descripcion':self.descripcion,
+            'tipo':self.tipo,
+            'aprobado':self.aprobado
+
+        }
+        return evento_json
+    @staticmethod
+    #Convertir JSON a objeto
+    def desde_json(persona_json):
+        nombre = evento_json.get('nombre')
+        fecha = evento_json.get('fecha')
+        descripcion = evento_json.get('descripcion')
+        tipo=evento_json.get('tipo')
+        aprobado=evento_json.get('aprobado')
+        return Persona(nombre=nombre, fecha=fecha, descripcion=descripcion,tipo=tipo,aprobado=aprobado)
+
 
 class Usuario(UserMixin,db.Model):
     usuarioId = db.Column(db.Integer, primary_key=True)
@@ -72,3 +95,14 @@ class Comentario(db.Model):
     evento= db.relationship("Evento", back_populates="comentarios")
     def __repr__(self):
         return '<Comentario: %r %r %r >' % (self.comentarioId,self.texto, self.fechahora)
+    def a_json(self):
+        comentario_json = {
+            'eventoId': url_for('listEventsbyApi', id=self.eventoId, _external=True),
+            'comentarioId': self.comentarioId,
+            'contenido': self.contenido,
+            'fecha': self.fechahora,
+            'usuarioId':self.usuarioId,
+            'usuario':self.usuario
+
+        }
+        return comentario_json
