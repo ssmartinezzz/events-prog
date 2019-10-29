@@ -3,6 +3,7 @@ from datetime import datetime
 from app import app,db,csrf
 from models import *
 from flask import jsonify
+from emailfunctions import *
 
 
 #Listar todos los eventos
@@ -29,8 +30,10 @@ def aprobarEventosApi(id):
     evento=db.session.query(Evento).get(id)
     evento.aprobado=True
     email=evento.usuario.email
+    sendMail(email,'Su evento ha sido borrado!','mail/event-confirm')
     db.session.commit()
     print("El evento ha sido aprobado")
+    print(email)
     return jsonify({'Evento':[evento.a_json()]})
 #curl -i -X PUT -H "Content-Type:application/json" -H "Accept:application/json" http://localhost:5000/api/evento/15 -d '{"nombre":"eventaso"}'
 @app.route('/api/evento/<id>', methods=['PUT'])
@@ -55,8 +58,8 @@ def apiActualizarEvento(id):
 def deleteApiEvent(id):
     eventoaeliminar= db.session.query(Evento).get(id)
     db.session.delete(eventoaeliminar)
-    #email=evento.usuario.email
-    #sendMail(email,'Su evento ha sido borrado!','mail/mensaje')
+    email=evento.usuario.email
+    sendMail(email,'Su evento ha sido borrado!','mail/deleted')
     db.session.commit()
     print("Evento eliminado con éxito")
     return '',204
