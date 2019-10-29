@@ -24,7 +24,7 @@
             <div class="col-md-2">
             </div>
             <div class="col-md-8">
-                <button type="button" href="{{url_for('user')}}" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+                <button type="button" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
                 <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
                     <form method="POST" action="{{ url_for('mostrarevento', id=evento["eventoId"]) }}" enctype="multipart/form-data">
@@ -41,7 +41,7 @@
                           <div class="comentario">
                             {{ mostrar_campo(form.comentario, class='form-control', style="width: 490px; height: 170px" )}}
                           </div>
-                        
+
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>

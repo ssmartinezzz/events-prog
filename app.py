@@ -6,7 +6,7 @@ import os
 from flask_login import LoginManager
 from dotenv import load_dotenv
 from apiroutes import *
-
+from flask_wtf import CSRFProtect
 app = Flask(__name__)
 load_dotenv()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -23,6 +23,7 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['FLASKY_MAIL_SENDER'] = 'EventZ <no-replyeventZ@gmail.com>'
+csrf = CSRFProtect(app)
 db = SQLAlchemy(app)
 email= Mail(app)
 login_manager=LoginManager(app)

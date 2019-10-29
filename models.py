@@ -26,10 +26,11 @@ class Evento(db.Model):
             'eventoId': url_for('listEventsbyApi', id=self.eventoId, _external=True), #Ruta para acceder a la persona
             'nombre': self.nombre,
             'fecha': self.fecha,
-            #'hora': self.hora,
+            'hora': str(self.hora),
             'descripcion':self.descripcion,
             'tipo':self.tipo,
-            'aprobado':self.aprobado
+            'aprobado':self.aprobado,
+            'imagen':self.imagen
 
         }
         return evento_json
@@ -66,11 +67,7 @@ class Usuario(UserMixin,db.Model):
         self.password = generate_password_hash(notepassword)
     def get_id(self):
            return (self.usuarioId)
-    def is_admin(self):
-        aux= False
-        if self.admin == 1:
-            aux = True
-        return aux
+
     #Al verififcar pass comparar hash del valor ingresado con el de la db
     def verificar_pass(self, notepassword):
         return check_password_hash(self.password, notepassword)
@@ -97,12 +94,10 @@ class Comentario(db.Model):
         return '<Comentario: %r %r %r >' % (self.comentarioId,self.texto, self.fechahora)
     def a_json(self):
         comentario_json = {
-            'eventoId': url_for('listEventsbyApi', id=self.eventoId, _external=True),
-            'comentarioId': self.comentarioId,
+            'comentarioId':url_for('convertToJSON', id=self.comentarioId, _external=True),
             'contenido': self.contenido,
-            'fecha': self.fechahora,
-            'usuarioId':self.usuarioId,
-            'usuario':self.usuario
-
+            'fechahora': self.fechahora
         }
         return comentario_json
+    def get_id(self):
+           return (self.comentarioId)

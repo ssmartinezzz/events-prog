@@ -36,7 +36,7 @@
     </div>
     <div class="col-md-3">
       <a type="button" class="btn btn-outline-success" href="{{url_for('checkEvent',id=evento["eventoId"])}}">Aprobar</a>
-      <button type="button" class="btn btn-outline-danger">Desaprobar</button>
+      <a type="button" class="btn btn-outline-success" href="{{url_for('actualizar',id=evento["eventoId"])}}">Modificar</a>
     </div>
   </div>
 </div>

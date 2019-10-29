@@ -78,16 +78,16 @@ class Navegation(FlaskForm):
 
         fechainicio = DateField('Fecha',
         [
-
+            validators.Optional()
         ])
 
         fechafinal= DateField('Fecha',
         [
-
+            validators.Optional()
         ])
         titulo= StringField('Título',
         [
-
+            validators.Optional()
         ])
         lista_opciones = [
         ('1','Deportivo'),
