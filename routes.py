@@ -58,17 +58,22 @@ def index(pag=1,fechainicio='',fechafinal='',opciones=''):
         fechainicio = request.args.get('fechainicio',None)
         fechafinal = request.args.get('fechafinal',None)
         opciones = request.args.get('opciones',None)
-        eventos=Evento.query.filter(Evento.aprobado==True)
+    eventos=Evento.query.filter(Evento.aprobado==True)
     if(fechainicio!=None and fechainicio!=''):
         formularionav.fechainicio.data = datetime.datetime.strptime(fechainicio, "%Y-%m-%d").date()
-        eventos=eventos.filter(Evento.fecha>=fechainicio)
+        eventos=eventos.filter(Evento.fecha<=fechainicio)
     if(fechafinal!=None and fechafinal!=''):
         formularionav.fechafinal.data= datetime.datetime.strptime(fechafinal, "%Y-%m-%d").date()
-        eventos=eventos.filter(Evento.fecha<=fechafinal)
+        eventos=eventos.filter(Evento.fecha>=fechafinal)
     if(opciones!=None and opciones!='' and opciones!='null'and opciones!='None'):
         formularionav.opciones.data = opciones
         eventos = eventos.filter(Evento.tipo==opciones)
-    eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
+    eventos=eventos.order_by(Evento.fecha.desc())
+    eventos=eventos.paginate(pag,pag_tam,error_out=False)
+    print(eventos)
+
+
+
     return render_template('index.html', formularionav=formularionav,eventos=eventos)
 # Ruta para el inicio de sesion
 @app.route('/iniciar', methods=["POST", "GET"])

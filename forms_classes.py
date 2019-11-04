@@ -90,10 +90,11 @@ class Navegation(FlaskForm):
             validators.Optional()
         ])
         lista_opciones = [
-        ('1','Deportivo'),
-        ('2','Aprendizaje'),
-        ('3','Fiesta'),
-        ('4','Otro')
+        ('null','Seleccione una categoría'),
+        ('Deportivo','Deportivo'),
+        ('Aprendizaje','Aprendizaje'),
+        ('Fiesta','Fiesta'),
+        ('Otro','Otro')
     ]
     #Definición de campo select
         opciones = SelectField('Opción', choices=lista_opciones)

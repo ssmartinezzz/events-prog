@@ -1,9 +1,9 @@
 body {
-  background-image: url('../Fondo/mainbackground.png');
-  background-repeat: ;
-  background-size: cover;
+  background-image: url('../Fondo/fondonube.jpg');
+  background-attachment: fixed;
   background-position: center;
   background-color: black;
+  background-repeat: repeat-y;
 }
 
 #filtro {
@@ -39,13 +39,16 @@ body {
   padding: 80px;
   padding-left: 80px;
   padding-right: 80px;
-  background-image: url('../Fondo/cuero.jpg');
-  background-repeat: repeat;
-  background-size: auto;
-  min-height: 40px;
+  background-color: white;
+  background-attachment: fixed;
+  background-position: center;
+
   overflow: hidden;
   vertical-align: middle;
-  margin-top: 20px;
+  margin-top: 5%;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 5%;
 }
 #registrotitulo {
   text-align: center;
@@ -64,6 +67,7 @@ body {
   margin-left: 20px;
   margin-right: 20px;
   margin-top: 50px;
+  margin-bottom: 10%;
 }
 /*Parte css de la vista de cracion de evento*/
 .creacion {
@@ -126,22 +130,34 @@ body {
 }
 /*Encabezado y pie de la página*/
 #logo{
-  max-width: 100px;
-  max-height: 100px;
+  max-width: 50px;
+  max-height: 50px;
+  padding-right: 10px;
 }
 #Pie{
 
-  border:2px none;
-  color: white;
+
+  background-color: white;
+
 
 }
 /*ventana del login*/
 .loginuser{
-  border: 1px solid black;
-  background-image: url('../Fondo/flay.jpg');
-  padding-top: 10%;
-  padding-bottom: 10%;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 10%;
+    margin-bottom:20%;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    background-attachment: fixed;
+    background-position: center;
+    background-color: white;
+    background-repeat: no-repeat;
 }
+
+
 .titulosblancos{
   font-size: 35px;
   padding-top: 10px;
@@ -149,7 +165,4 @@ body {
   color: solid white;
 
 
-}
-.pagination-bar{
-  padding: 10px;
 }
