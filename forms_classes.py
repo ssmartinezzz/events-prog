@@ -71,21 +71,13 @@ class Logeo(FlaskForm):
         submit = SubmitField("Iniciar sesion")
 
 
-
-
 class Navegation(FlaskForm):
-
-
         fechainicio = DateField('Fecha',
         [
             validators.Optional()
         ])
 
         fechafinal= DateField('Fecha',
-        [
-            validators.Optional()
-        ])
-        titulo= StringField('Título',
         [
             validators.Optional()
         ])

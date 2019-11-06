@@ -7,16 +7,13 @@
 {% block contenido %}
 
 <div class="container" id="filtro">
-
 	<form method="GET" action="{{ url_for('index') }}" enctype="multipart/form-data" class="form-inline">
+
 		<div class="form-group">
 			{{mostrar_campo(formularionav.fechainicio, class='form-control')}}
 		</div>
 		<div class="form-group">
 			{{mostrar_campo(formularionav.fechafinal, class='form-control')}}
-		</div>
-		<div class="form-group">
-			{{mostrar_campo(formularionav.titulo, class='form-control')}}
 		</div>
 		<div class="form-group">
 			{{mostrar_campo(formularionav.opciones, class='form-control')}}
@@ -25,6 +22,7 @@
 			{{ mostrar_campo_submit(formularionav.submit , class='btn btn-primary')}}
 		</div>
 </div>
+
 </form>
 
 <div class="container" id="eventos">
@@ -58,7 +56,5 @@
 			<a href="{{ url_for('index', pag=eventos.next_num,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data) }}">Siguiente</a>
 			{% else %} Siguiente {% endif %}
 		</div>
-
-
 
 	{% endblock %}

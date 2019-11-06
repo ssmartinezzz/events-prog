@@ -5,7 +5,8 @@ from sqlalchemy import or_
 import os
 from flask_login import LoginManager
 from dotenv import load_dotenv
-from apiroutes import *
+
+
 from flask_wtf import CSRFProtect
 app = Flask(__name__)
 load_dotenv()
@@ -31,9 +32,8 @@ def admin_required():
 	return current_user.es_admin()
 
 
-if __name__ == '__main__': #Asegura que solo se ejectue el servidor cuando se ejecute el script directamente
-    from routes import *
-
-
-
-    app.run(port = 8000, debug = True)
+if __name__ == '__main__':#Asegura que solo se ejectue el servidor cuando se ejecute el script directamente
+	from routes import *
+	from errors import *
+	from apiroutes import *
+	app.run(port = 5000, debug = False)

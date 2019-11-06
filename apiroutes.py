@@ -30,7 +30,7 @@ def aprobarEventosApi(id):
     evento=db.session.query(Evento).get(id)
     evento.aprobado=True
     email=evento.usuario.email
-    sendMail(email,'Su evento ha sido borrado!','mail/event-confirm')
+    sendMail(email,'Su evento ha sido aprobado!','mail/event-confirm')
     db.session.commit()
     print("El evento ha sido aprobado")
     print(email)

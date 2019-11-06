@@ -1,5 +1,7 @@
 from app import db
 from models import *
+from sqlalchemy.exc import SQLAlchemyError
+from errors import *
 def listar_eventos():
     import csv
     with open('actividades-culturales.csv') as f:
@@ -40,7 +42,6 @@ def getUser(formulariolog):
 def navbar(formularionav):
     print(formularionav.fechainicio.data)
     print(formularionav.fechafinal.data)
-    print(formularionav.titulo.data)
     print(formularionav.opciones.data)
 def listEvent():
     eventlist =db.session.query(Evento).all()
@@ -65,6 +66,8 @@ def createUser(nombre,apellido,email,password,admin):
     #Agregar a db
     db.session.add(usuario)
     #Hacer commit de los cambios
-    db.session.commit()
-    #Envía la persona a la vista
-    #return render_template('usuario.html',usuario=usuario)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        mensaje=str(e)
+        getLogEvents(mensaje)

@@ -15,6 +15,7 @@ from flask_login import login_required, login_user, logout_user, current_user, L
 
 
 
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 def mysql_query(query):
@@ -26,7 +27,6 @@ def mysql_query(query):
 def unauthorized_callback():
     flash('Para continuar debe iniciar sesión.','warning')
     return redirect(url_for('index'))
-
 
 
 
@@ -70,7 +70,7 @@ def index(pag=1,fechainicio='',fechafinal='',opciones=''):
         eventos = eventos.filter(Evento.tipo==opciones)
     eventos=eventos.order_by(Evento.fecha.desc())
     eventos=eventos.paginate(pag,pag_tam,error_out=False)
-    print(eventos)
+
 
 
 
@@ -97,11 +97,11 @@ def logIn():
 def registro():
     formulario = Registro()  # Instanciar formulario de registro
     if formulario.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
-        flash('Usuario registrado exitosamente')  # Mostrar mensaje
         mostrar_datos(formulario)  # Imprimir datos por consola
-        createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=True)
+        createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)
         email=formulario.email.data
         sendMail(email,'Su cuenta de EventZ ha sido creada!','mail/newaccount')
+        flash('Usuario registrado exitosamente')  # Mostrar mensaje
         print(formulario.email.data)#terminal
         return redirect(url_for('index'))
     return render_template('registro.html', formulario=formulario)
@@ -116,7 +116,6 @@ def menu():
 @app.route('/mis-eventos')
 @login_required
 def eventos():
-    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
     return render_template('my-events.html',listaeventos=listaeventos)
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
@@ -130,6 +129,7 @@ def crear():
         f.save(os.path.join('static/Fondo/', filename))
         flash("Evento creado exitosamente!")
         showEve(formulario)
+        listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
         createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,current_user.usuarioId)
         return redirect(url_for('eventos'))
     return render_template('create-event.html', formulario=formulario, destino="crear")
@@ -183,7 +183,6 @@ def mostrarevento(id):
         pCommentary(form)
         createComment(form.comentario.data,current_user.usuarioId,id)
         return redirect(url_for('mostrarevento',id=id))
-    return render_template('evento.html', form=form, id=id, evento=evento, commentList=commentList, mostrarevento=mostrarevento,listaeventos=listaeventos)
 @app.route('/comentary/create/<contenido>/<usuarioId>/<eventoId>')
 @login_required
 def createComment(contenido,usuarioId,eventoId):
@@ -193,9 +192,10 @@ def createComment(contenido,usuarioId,eventoId):
     comment = Comentario(contenido=contenido,fechahora=fechahora,evento=evento,usuario=usuario)
     db.session.add(comment)
     db.session.commit()
+    #Funcion que permite por el panel de mis eventos eliminar el evento que se toque con el respectivo id
+    return render_template('evento.html', form=form, id=id, evento=evento, commentList=commentList, mostrarevento=mostrarevento,listaeventos=listaeventos)
 
 
-#Funcion que permite por el panel de mis eventos eliminar el evento que se toque con el respectivo id
 @app.route('/evento/eliminar/<id>')
 @login_required
 def deleteEvent(id):
@@ -248,13 +248,12 @@ def deletedByAdmin(id):
     if not current_user.admin:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
-
     evento= db.session.query(Evento).get(id)
     db.session.delete(evento)
     email=evento.usuario.email
     sendMail(email,'Su evento ha sido borrado!','mail/deleted')
-    print(email)
     db.session.commit()
+    print(email)
     flash('Evento eliminado exitosamente!')
     return redirect(url_for('regular'))
 
@@ -271,13 +270,11 @@ def checkEvent(id):
     evento.aprobado=True
     email=evento.usuario.email
     actualizareve(evento)
-    flash('Evento aprobado!')
     sendMail(email,'Su evento ha sido aprobado por el administrador!','mail/event-confirm')
-    print(email)
     db.session.commit()
+    print(email)
+    flash('Evento aprobado!')
     return redirect(url_for('regular',evento=evento))
-
-
 #Ruta que le permite al administrador del sistema eliminar el comentario deseado de un evento "x"
 @app.route('/comentario/eliminar/<id>')
 @login_required
@@ -285,7 +282,6 @@ def deleteComment(id):
     if current_user.admin:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
-
     comentario = db.session.query(Comentario).get(id)
     eventID= comentario.eventoId
     db.session.delete(comentario)
@@ -308,7 +304,3 @@ def deleteUsuario(id):
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
 """
-
-
-
-app.run(debug=True)

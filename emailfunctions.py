@@ -3,6 +3,7 @@ from flask_mail import Mail, Message #Importar para enviar Mail
 from flask_wtf import CSRFProtect #importar para proteccion CSRF
 from flask import Flask, render_template, session, redirect, url_for
 from models import *
+from errors import getLogEvents
 from threading import Thread
 import os, time, smtplib
 def confMsg(to, subject, template, **kwargs):
@@ -28,13 +29,22 @@ def enviarMailAsync(app, msg):
 
         #Mostrar errores por consola
         except smtplib.SMTPAuthenticationError as e:
-            print("Error de autenticación: "+str(e))
+            mensaje =str(e)
+            getLogEvents(mensaje)
         except smtplib.SMTPServerDisconnected as e:
-            print("Servidor desconectado: "+str(e))
+            mensaje =str(e)
+            getLogEvents(mensaje)
         except smtplib.SMTPSenderRefused as e:
-            print("Se requiere autenticación: "+str(e))
+            mensaje =str(e)
+            getLogEvents(mensaje)
         except smtplib.SMTPException as e:
-            print("Error: "+str(e))
+            error= str(e)
+            getLogEvents(error)
+        except OSError as e:
+            error=str(e)
+            getLogEvents(error)
+
+
 
 #Función para enviar mail
 def sendMail(to, subject, template, **kwargs):
