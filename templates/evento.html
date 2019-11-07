@@ -2,7 +2,7 @@
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
 {% extends "hyf.html" %}
 {% block estilos %}
-<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+<link rel="stylesheet" href="{{url_for('static',filename='css/style_events.css')}}">
 {% endblock %}
 {% block contenido %}
 <div class="container">
@@ -24,7 +24,7 @@
             <div class="col-md-2">
             </div>
             <div class="col-md-8">
-                <button type="button" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+                <button type="button" id="botonhacercoment" class="btn btn-dark boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
                 <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
                     <form method="POST" action="{{ url_for('mostrarevento', id=evento["eventoId"]) }}" enctype="multipart/form-data">

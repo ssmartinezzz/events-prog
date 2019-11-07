@@ -29,8 +29,8 @@ def enviarMailAsync(app, msg):
 
         #Mostrar errores por consola
         except smtplib.SMTPAuthenticationError as e:
-            mensaje =str(e)
-            getLogEvents(mensaje)
+            mensaje =str(e)#Parseo el error obtenido del mail (este caso credenciales) a un string
+            getLogEvents(mensaje)#Al ser el mensaje una string lo puedo mandar como parametro a mi funcion que maneja el log de errores
         except smtplib.SMTPServerDisconnected as e:
             mensaje =str(e)
             getLogEvents(mensaje)

@@ -4,6 +4,7 @@ from app import app,db,csrf
 from models import *
 from flask import jsonify
 from emailfunctions import *
+from errors import *
 
 
 #Listar todos los eventos
@@ -28,13 +29,22 @@ def listEventsbyApi(id):
 @csrf.exempt
 def aprobarEventosApi(id):
     evento=db.session.query(Evento).get(id)
-    evento.aprobado=True
-    email=evento.usuario.email
-    sendMail(email,'Su evento ha sido aprobado!','mail/event-confirm')
-    db.session.commit()
-    print("El evento ha sido aprobado")
-    print(email)
-    return jsonify({'Evento':[evento.a_json()]})
+    if (evento.aprobado==True):
+        print("El evento ya se encuentra aprobado!")
+    elif (evento.aprobado==False):
+        evento.aprobado=True
+        email=evento.usuario.email
+        sendMail(email,'Su evento ha sido aprobado!','mail/event-confirm')
+        try:
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            mensaje=str(e)
+            getLogEvents(mensaje)
+        print("El evento ha sido aprobado")
+        print(email)
+        return jsonify({'Evento':[evento.a_json()]})
+
 #curl -i -X PUT -H "Content-Type:application/json" -H "Accept:application/json" http://localhost:5000/api/evento/15 -d '{"nombre":"eventaso"}'
 @app.route('/api/evento/<id>', methods=['PUT'])
 @csrf.exempt
@@ -46,10 +56,14 @@ def apiActualizarEvento(id):
     evento.tipo=request.json.get('tipo', evento.tipo)
     evento.aprobado=False
     db.session.add(evento)
-    db.session.commit()
-    #Convertir la persona actualizada en JSON
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje=str(e)
+        getLogEvents(mensaje)
+    return jsonify(evento.a_json()) , 201#Convertir la persona actualizada en JSON
     #Pasar código de status
-    return jsonify(evento.a_json()) , 201
 
 #Eliminar evento
 #curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/eventoadmin/eliminareve/2
@@ -60,7 +74,12 @@ def deleteApiEvent(id):
     db.session.delete(eventoaeliminar)
     email=evento.usuario.email
     sendMail(email,'Su evento ha sido borrado!','mail/deleted')
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje=str(e)
+        getLogEvents(mensaje)
     print("Evento eliminado con éxito")
     return '',204
 
@@ -85,6 +104,11 @@ def apigetComments(id):
 def deleteCommentapi(id):
     comentario =db.session.query(Comentario).get(id)
     db.session.delete(comentario)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje=str(e)
+        getLogEvents(mensaje)
     print("Comentario borrado correctamente")
     return '',204

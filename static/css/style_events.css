@@ -1,0 +1,66 @@
+body {
+  background-color: black;
+
+}
+.Entorno{
+  background-attachment: fixed;
+  background-image: url('../Fondo/firework.jpg')
+
+}
+
+.imagen {
+  border: 3px solid black;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  margin-right: 50px;
+  margin-left: 30px;
+
+}
+
+.commentbox {
+  color:lightblue;
+  padding-left: 20px;
+  padding-right: 10px;
+  padding-top: 10px;
+  margin-top: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
+  font-size: 25px;
+
+}
+#logo{
+  max-width: 50px;
+  max-height: 50px;
+  padding-right: 10px;
+
+}
+#Pie{
+
+  margin:auto;
+  background-color: white;
+}
+.cuerpotexto{
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 40px;
+
+}
+
+.reporte{
+  margin-left: 60px;
+  padding-left: 2px;
+  margin-top: 40px;
+
+}
+#tituloevento{
+  color:white;
+  text-align: center;
+  font-size: 20px;
+  padding-top: 50px;
+
+}
+#botonhacercoment{
+  background-color:lightblue;
+  color:black;
+}

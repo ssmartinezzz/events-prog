@@ -2,19 +2,7 @@ from app import db
 from models import *
 from sqlalchemy.exc import SQLAlchemyError
 from errors import *
-def listar_eventos():
-    import csv
-    with open('actividades-culturales.csv') as f:
-        a = [{k: v for k, v in row.items()}
-            for row in csv.DictReader(f, skipinitialspace=True)]
-    return a
 
-def comentarios():
-        import csv
-        with open('coments.csv') as f:
-            a = [{k: v for k, v in row.items()}
-                for row in csv.DictReader(f, skipinitialspace=True)]
-        return a
 def mostrar_datos(formulario):
     print(formulario.nombre.data)
     print(formulario.apellido.data)
@@ -55,10 +43,12 @@ def createEvent(nombre,fecha,hora,descripcion,imagen,tipo,usuarioId):
     #Agregar a db
     db.session.add(evento)
     #Hacer commit de los cambios
-    db.session.commit()
-    #Envía la persona a la vista
-    #return render_template('evento.html',evento=evento)
-#@app.route('/usuario/crear/<nombre>/<apellido>/<email>/<password>/<admin>')
+    try:
+        db.session.commit() #Envía la persona a la vista
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje= str(e)
+        getLogEvents(mensaje)
 def createUser(nombre,apellido,email,password,admin):
     #EJ: /persona/crear/Marcos/Gonzales/1999-05-01
     #Crear una persona
@@ -69,5 +59,6 @@ def createUser(nombre,apellido,email,password,admin):
     try:
         db.session.commit()
     except SQLAlchemyError as e:
+        db.session.rollback()
         mensaje=str(e)
         getLogEvents(mensaje)

@@ -2,7 +2,7 @@
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
 {% extends "hyf.html" %}
 {% block estilos %}
-<link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
+<link rel="stylesheet" href="{{url_for('static',filename='css/style_events.css')}}">
 {% endblock %}
 {% block contenido %}
 
@@ -14,10 +14,7 @@
         <label> Herramientas admin</label>
         <div class="row">
           <div class="col-md-4">
-            <button type="button" class="btn btn-success">Aprobar</button>
-          </div>
-          <div class="col-md-2">
-            <button type="button" class="btn btn-danger">Desaprobar</button>
+            <a type="button" class="btn btn-outline-success" href="{{url_for('checkEvent',id=evento["eventoId"])}}">Aprobar</a>
           </div>
           <div class="col-md-2">
 
@@ -44,14 +41,15 @@
           </div>
 
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            {% for comentario in comentadmin %}
+            {{ comentariosadmin(comentario) }}
+            {% endfor %}
+          </div>
+          </div>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          {% for comentario in comentadmin %}
-          {{ comentariosadmin(comentario) }}
-          {% endfor %}
-        </div>
-        </div>
+
     </div>
 
 

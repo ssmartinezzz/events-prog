@@ -52,7 +52,9 @@ body {
 }
 #registrotitulo {
   text-align: center;
-  color: solid black;
+  color:  black;
+  border: 2px solid black;
+  background-color: white;
 }
 
 #reg1 {
@@ -94,40 +96,8 @@ body {
   background-image: url('../Fondo/fondoblanco.jpg');
 }
 /*parte css de la vista evento en particular*/
-.Entorno {
-  border: 1px solid black;
-  margin-top: 80px;
-  background-image: url('../Fondo/fondoevento.jpg');
-}
-.cuerpotexto{
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 10px;
 
-}
-.imagen {
-  border: 3px solid black;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  margin-right: 50px;
-  margin-left: 30px;
-}
 
-.commentbox {
-  padding-left: 20px;
-  padding-right: 10px;
-  padding-top: 10px;
-  margin-top: 20px;
-  margin-left: 50px;
-  margin-right: 50px;
-
-}
-.reporte{
-  margin-left: 60px;
-  padding-left: 2px;
-  margin-top: 40px;
-
-}
 /*Encabezado y pie de la página*/
 #logo{
   max-width: 50px;
@@ -138,8 +108,6 @@ body {
 
   margin:auto;
   background-color: white;
-
-
 }
 /*ventana del login*/
 .loginuser{
