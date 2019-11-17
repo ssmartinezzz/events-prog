@@ -9,7 +9,7 @@ import os.path
 from app import db,login_manager,app
 from models import *
 import os
-from emailfunctions import *
+from email_functions import *
 from flask_login import login_required, login_user, logout_user, current_user, LoginManager
 
 
@@ -116,6 +116,7 @@ def menu():
 @app.route('/mis-eventos')
 @login_required
 def eventos():
+    listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
     return render_template('my-events.html',listaeventos=listaeventos)
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
@@ -161,6 +162,8 @@ def actualizar(id):
             formulario.desc.data=evento.descripcion
             formulario.imagen.data=evento.imagen
     return render_template('create-event.html', formulario=formulario, destino="actualizar",evento=evento)
+
+
 @app.route('/evento/actualizar/<evento>')
 @login_required
 def actualizareve(evento):
@@ -170,14 +173,13 @@ def actualizareve(evento):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
 
 
 
 # RUTA Y FUNCION PARA LISTAR LOS EVENTOS CON LOS COMENTARIOS Y CREARLOS
 @app.route('/evento/<id>', methods=["POST", "GET"])
-@login_required
 def mostrarevento(id):
     evento = db.session.query(Evento).get(id)
     commentList =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
@@ -202,7 +204,7 @@ def createComment(contenido,usuarioId,eventoId):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
 
 @app.route('/evento/eliminar/<id>')
@@ -214,12 +216,12 @@ def deleteEvent(id):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
     flash('Evento eliminado exitosamente!')
     return redirect(url_for('eventos'))
 
-"RUTAS QUE SOLO PUEDE ACCEDER EL ADMINISTRADOR DEL SITIO, CONTIENE LAS FUNCIONES"
+""""RUTAS QUE SOLO PUEDE ACCEDER EL ADMINISTRADOR DEL SITIO, CONTIENE LAS FUNCIONES"""
 
 #Ruta que muestra el menu de opciones disponibles al administrador
 @app.route('/admin/menu')
@@ -237,7 +239,6 @@ def menuadmin():
 @login_required
 def regular():
     if not current_user.admin:
-        print("hola")
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
     listaeventos=db.session.query(Evento).all()
@@ -273,7 +274,7 @@ def deletedByAdmin(id):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
     print(email)
     flash('Evento eliminado exitosamente!')
@@ -302,7 +303,7 @@ def checkEvent(id):
             db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
-            mensaje=str(e)
+            mensaje=str(e._message())
             getLogEvents(mensaje)
         print(email)
         flash('Evento aprobado!')
@@ -323,7 +324,7 @@ def deleteComment(id):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('El comentario ha sido borrado con exito!','warning')
+    flash('El comentario ha sido borrado con exito!')
     return redirect(url_for('eventoad',id=eventID))

@@ -69,7 +69,7 @@ body {
   margin-left: 20px;
   margin-right: 20px;
   margin-top: 50px;
-  margin-bottom: 10%;
+  margin-bottom: 50px;
 }
 /*Parte css de la vista de cracion de evento*/
 .creacion {
@@ -106,7 +106,7 @@ body {
 }
 #Pie{
 
-  margin:auto;
+
   background-color: white;
 }
 /*ventana del login*/
@@ -130,12 +130,10 @@ body {
   font-size: 35px;
   padding-top: 10px;
   padding-bottom: 10px;
-  color: blue;
-  background-color: white;
+  color: white;
   margin-top: 10px;
   margin-bottom: 10px;
-  border:1px solid black;
-  border-radius:5px;
+  text-align: center;
 
 
 }

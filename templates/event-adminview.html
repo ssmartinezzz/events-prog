@@ -1,62 +1,49 @@
 {% from "macros.html" import comentariosadmin,expanded_event,mostrarevents %}
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
-{% extends "hyf.html" %}
+{% extends "header_footer.html" %}
 {% block estilos %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/style_events.css')}}">
 {% endblock %}
 {% block contenido %}
 
-<div class="container">
-  <div class="row">
-    <div class="Entorno">
-      {{expanded_event(evento)}}
-      <div class="reporte">
-        <label> Herramientas admin</label>
-        <div class="row">
-          <div class="col-md-4">
-            <a type="button" class="btn btn-outline-success" href="{{url_for('checkEvent',id=evento["eventoId"])}}">Aprobar</a>
-          </div>
-          <div class="col-md-2">
-
-          </div>
-          <div class="col-md-4">
-            <a type="button" class="btn btn-warning" href="{{url_for('deletedByAdmin',id=evento["eventoId"])}}">Eliminar</a>
-          </div>
-
+<div class="row">
+  <div class="Entorno">
+    {{expanded_event(evento)}}
+    <div class="reporte">
+      <label> Herramientas admin</label>
+      <div class="row">
+        <div class="col-md-4">
+          <a type="button" class="btn btn-outline-success" href="{{url_for('checkEvent',id=evento["eventoId"])}}">Aprobar</a>
         </div>
-
-      </div>
-
-      <div class="commentbox">
-
-        <div class="row">
-          <div class="col-md-2">
-
-          </div>
-          <div class="col-md-8">
-            <h4>Sección de comentarios</h4>
-          </div>
-          <div class="col-md-2">
-
-          </div>
-
+        <div class="col-md-2">
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            {% for comentario in comentadmin %}
-            {{ comentariosadmin(comentario) }}
-            {% endfor %}
-          </div>
-          </div>
+        <div class="col-md-4">
+          <a type="button" class="btn btn-warning" href="{{url_for('deletedByAdmin',id=evento["eventoId"])}}">Eliminar</a>
+        </div>
       </div>
-
     </div>
 
-
-
+    <div class="commentbox">
+      <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+          <h4>Sección de comentarios</h4>
+        </div>
+        <div class="col-md-2">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {% for comentario in comentadmin %}
+          {{ comentariosadmin(comentario) }}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
-
 </div>
+
 
 
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "hyf.html" %}
+{% extends "header_footer.html" %}
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit,mostrar_error %}
 {% block estilos %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
@@ -7,29 +7,20 @@
 <div class="loginuser">
 	<form method="POST" action="{{ url_for('logIn') }}" enctype="multipart/form-data">
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-
 		<div class="row">
-
 			<div class="col-md-12">
 				{{mostrar_campo(formulariolog.email,class='form-control')}}
 			</div>
-
 		</div>
-
 		<div class="row">
-
 			<div class="col-md-12">
 				{{ mostrar_campo(formulariolog.password , class='form-control')}}
 			</div>
-
 		</div>
-
 		<div class="row">
-
 			<div class="col-md-12">
 				{{ mostrar_campo_submit(formulariolog.submit , class='form-control')}}
 			</div>
-
 		</div>
 	</form>
 </div>

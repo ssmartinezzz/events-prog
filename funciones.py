@@ -47,8 +47,9 @@ def createEvent(nombre,fecha,hora,descripcion,imagen,tipo,usuarioId):
         db.session.commit() #Envía la persona a la vista
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje= str(e)
+        mensaje= str(e._message())
         getLogEvents(mensaje)
+
 def createUser(nombre,apellido,email,password,admin):
     #EJ: /persona/crear/Marcos/Gonzales/1999-05-01
     #Crear una persona
@@ -60,5 +61,5 @@ def createUser(nombre,apellido,email,password,admin):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)

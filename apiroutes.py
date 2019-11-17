@@ -3,7 +3,7 @@ from datetime import datetime
 from app import app,db,csrf
 from models import *
 from flask import jsonify
-from emailfunctions import *
+from email_functions import *
 from errors import *
 
 
@@ -39,7 +39,7 @@ def aprobarEventosApi(id):
             db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
-            mensaje=str(e)
+            mensaje=str(e._message())
             getLogEvents(mensaje)
         print("El evento ha sido aprobado")
         print(email)
@@ -60,7 +60,7 @@ def apiActualizarEvento(id):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
     return jsonify(evento.a_json()) , 201#Convertir la persona actualizada en JSON
     #Pasar código de status
@@ -78,7 +78,7 @@ def deleteApiEvent(id):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
     print("Evento eliminado con éxito")
     return '',204
@@ -108,7 +108,7 @@ def deleteCommentapi(id):
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
-        mensaje=str(e)
+        mensaje=str(e._message())
         getLogEvents(mensaje)
     print("Comentario borrado correctamente")
     return '',204

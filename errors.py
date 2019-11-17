@@ -30,7 +30,6 @@ def internal_server_error(e):
 def getLogEvents(error):
     log=open('error.log','a')
     log.write("\n")
-    log.write("$")
     log.write(f"\nHa ocurrido el error:{error})")
-    log.write(f"\nDATE:{datetime.datetime.now()}\n$")
+    log.write(f"\nDATE:{datetime.datetime.now()}$\n")
     log.close()

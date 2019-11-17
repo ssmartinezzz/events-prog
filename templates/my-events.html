@@ -1,4 +1,4 @@
-{% extends "hyf.html" %}
+{% extends "header_footer.html" %}
 {% from "macros.html" import myevents %}
 {% block estilos %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
@@ -7,56 +7,20 @@
 <script src="https://code.iconify.design/1/1.0.2/iconify.min.js"></script>
 {% endblock %}
 {% block contenido %}
-<h5 id="registrotitulo"></h5>
-<div class="row">
-  <div class="col-md-2">
-
-  </div>
-  <div class="col-md-8">
+<h5 id="titulosblancos">Mis eventos</h5>
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-4">
       </div>
-      <div class="col-md-8">
-        <h7 id="titulosblancos">Eventos aprobados</h7>
-      </div>
-      <div class="col-md-2">
-      </div>
-
-      <div class="row">
+      <div class="col-md-4">
         {% for evento in listaeventos %}
-        {% if (evento.aprobado==True) %}
         {{ myevents(evento)}}
-        {% endif %}
         {% endfor %}
       </div>
-
-
-
-    </div>
-    <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-4">
       </div>
-      <div class="col-md-8">
-        <h7 id="titulosblancos">Eventos pendientes de ser aprobados</h7>
-      </div>
-      <div class="col-md-2">
-      </div>
-
-      <div class="row">
-        {% for evento in listaeventos %}
-        {% if (evento.aprobado==False) %}
-        {{ myevents(evento)}}
-        {% endif %}
-        {% endfor %}
-      </div>
-
-
-
     </div>
 
-    <div class="col-md-2">
 
-    </div>
-  </div>
+
 
   {% endblock %}

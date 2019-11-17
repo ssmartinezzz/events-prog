@@ -1,57 +1,38 @@
 {% from "macros.html" import evento_admin %}
-{% extends "hyf.html" %}
+{% extends "header_footer.html" %}
 {% block estilos %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/estilo.css')}}">
 {% endblock %}
 {% block contenido %}
-<h5 id="registrotitulo"></h5>
-<div class="row">
-  <div class="col-md-2">
-
-  </div>
-  <div class="col-md-8">
     <div class="eventos">
       <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-4">
         </div>
-        <div class="col-md-8">
+        <div class="col-md-4">
           <h7 id="titulosblancos">Eventos aprobados</h7>
+          {% for evento in listaeventos %}
+          {% if (evento.aprobado==True) %}
+          {{ evento_admin(evento)}}
+          {% endif %}
+          {% endfor %}
         </div>
-        <div class="col-md-2">
+        <div class="col-md-4">
         </div>
-
-          <div class="row">
-            {% for evento in listaeventos %}
-            {% if (evento.aprobado==True) %}
-            {{ evento_admin(evento)}}
-            {% endif %}
-            {% endfor %}
-          </div>
-
-
-
       </div>
       <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-4">
         </div>
-        <div class="col-md-8">
+        <div class="col-md-4">
           <h7 id="titulosblancos">Eventos pendientes de aprobacion</h7>
-        </div>
-        <div class="col-md-2">
-        </div>
-        <div class="row">
           {% for evento in listaeventos %}
           {% if (evento.aprobado==False) %}
           {{ evento_admin(evento)}}
           {% endif %}
           {% endfor %}
         </div>
+        <div class="col-md-4">
+        </div>
       </div>
     </div>
 
-
-    <div class="col-md-2">
-
-    </div>
-  </div>
   {% endblock %}
