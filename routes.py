@@ -16,19 +16,13 @@ from flask_login import login_required, login_user, logout_user, current_user, L
 
 
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-
 def mysql_query(query):
     return query.statement.compile(compile_kwargs={"literal_binds": True})
-
-
 
 @login_manager.unauthorized_handler #Método que cuando intente acceder a ruta sin estar logeado muestre lo siguiente.
 def unauthorized_callback():
     flash('Para continuar debe iniciar sesión.','warning')
     return redirect(url_for('index'))
-
-
 
 @app.route('/logout')
 #Limitar el acceso a los usuarios registrados
@@ -41,7 +35,7 @@ def logout():
     pag=1
     pag_tam=6
     eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
-    flash('Logged off!','warning')
+    flash('Logged off!')
     return render_template('index.html', formulariolog=formulariolog,formularionav=formularionav,eventos=eventos)
 
 
@@ -100,7 +94,7 @@ def registro():
         mostrar_datos(formulario)  # Imprimir datos por consola
         createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)#Paso los campos obligatorios que necesita esta funcion para crear un nuevo usuario, es decir los campos de los modelos
         email=formulario.email.data# Almaceno en las variables propias de la funcion el contenido del formulario
-        sendMail(email,'Su cuenta de EventZ ha sido creada!','mail/newaccount')
+        sendMail(email,'Su cuenta de EventZ ha sido creada!','mail/newaccount') #Funcion del mail que requiere la direccion a enviar "VAR mail", con el mensaje a mostrar teniendo en cuenta un formato txt y html que poseemos
         flash('Usuario registrado exitosamente')  # Mostrar mensaje
         print(formulario.email.data)#terminal
         return redirect(url_for('index'))
@@ -145,7 +139,7 @@ def actualizar(id):
     if formulario.validate_on_submit():
         flash('Las modificaciones del evento han sido guardadas con éxito!!!')
         showEve(formulario)
-        evento.nombre=formulario.titulo.data
+        evento.nombre=formulario.titulo.data    # A los valores de la query del objeto que queremos le asignamos los nuevos conseguidos por el propio formulario
         evento.fecha=formulario.fechaevento.data
         evento.hora=formulario.hora.data
         evento.tipo=formulario.opciones.data
@@ -206,6 +200,21 @@ def createComment(contenido,usuarioId,eventoId):
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
+@app.route('/micomentario/eliminar/<id>')
+@login_required
+def deleteMyComment(id):
+    comentario = db.session.query(Comentario).get(id)
+    eventID= comentario.eventoId
+    db.session.delete(comentario)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje=str(e._message())
+        getLogEvents(mensaje)
+    flash('El comentario ha sido borrado con exito!')
+    return redirect(url_for('mostrarevento',id=eventID))
+
 
 @app.route('/evento/eliminar/<id>')
 @login_required

@@ -9,7 +9,7 @@
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-calendar" data-inline="false"></span>{{evento["fecha"]}}</p>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-map" data-inline="false"></span>{{evento["tipo"]}}</p>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
-        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+        <p class="card-text"><small class="text-muted">De: {{evento.usuario.nombre}}</small></p>
         <a class="btn-btn-dark" href="{{url_for('mostrarevento',id=evento["eventoId"])}}"> Ver más</a>
 
       </div>
@@ -53,6 +53,7 @@
         <textarea class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
+      
       </div>
     </div>
 
