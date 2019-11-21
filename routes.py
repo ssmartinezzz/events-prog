@@ -25,8 +25,8 @@ def unauthorized_callback():
 def logout():
     logout_user()
     #Insntanciar formulario de Login
-    formularionav=Navegation()
-    formulariolog = Logeo()
+    formularionav=Navegationform()
+    formulariolog = Logform()
     pag=1
     pag_tam=6
     eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
@@ -41,7 +41,7 @@ def logout():
 #Ruta cuando se aplica el filtro
 @app.route('/<int:pag>/<fechainicio>/<fechafinal>/<opciones>',methods=['GET'])
 def index(pag=1,fechainicio='',fechafinal='',opciones=''):
-    formularionav=Navegation()
+    formularionav=Navegationform()
     pag_tam = 6
     if(request.args):
         fechainicio = request.args.get('fechainicio',None)
@@ -65,7 +65,7 @@ def index(pag=1,fechainicio='',fechafinal='',opciones=''):
 # Ruta para el inicio de sesion
 @app.route('/iniciar', methods=["POST", "GET"])
 def logIn():
-    formulariolog = Logeo()  # Instanciar formulario de registro
+    formulariolog = Logform()  # Instanciar formulario de registro
     if formulariolog.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         usuario=Usuario.query.filter_by(email=formulariolog.email.data).first()
         if usuario is not None and usuario.verificar_pass(formulariolog.password.data):
@@ -82,7 +82,7 @@ def logIn():
 # RUTA PARA REGISTRO DE UN NUEVO USUARIO
 @app.route('/registro', methods=["POST", "GET"])
 def register():
-    formulario = Registro()  # Instanciar formulario de registro
+    formulario = Registerform()  # Instanciar formulario de registro
     if formulario.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         mostrar_datos(formulario)  # Imprimir datos por consola
         createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)#Paso los campos obligatorios que necesita esta funcion para crear un nuevo usuario, es decir los campos de los modelos
@@ -110,7 +110,7 @@ def myEvents():
 @app.route('/creacion', methods=["POST", "GET"])
 @login_required
 def createNewEvent():
-    formulario = EventoCrear()
+    formulario = Eventform()
     if formulario.validate_on_submit():
         f = formulario.imagen.data  # Obtener imagen
         filename = secure_filename(f.filename)
@@ -127,8 +127,8 @@ def createNewEvent():
 @login_required
 def updateEvent(id):
     evento = db.session.query(Evento).get(id)
-    formulario=EventoCrear(obj=evento)
-    EventoCrear.opcional(formulario.imagen)
+    formulario=Eventform(obj=evento)
+    Eventform.opcional(formulario.imagen)
     if formulario.validate_on_submit():
         flash('Las modificaciones del evento han sido guardadas con éxito!!!')
         showEve(formulario)
@@ -184,7 +184,7 @@ def deleteMyComment(id):
 def detailedEvent(id):
     evento = db.session.query(Evento).get(id)
     commentList =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
-    form = Comentarios()
+    form = Commentsform()
     if form.validate_on_submit():
         flash('Comentario Enviado')
         pCommentary(form)

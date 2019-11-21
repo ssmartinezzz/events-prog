@@ -4,21 +4,22 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer # Genera 
 from flask_login import UserMixin, LoginManager
 from flask import url_for
 
-class Evento(db.Model):
-    eventoId = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(90), nullable=False)
+class Evento(db.Model): # Obligatoriamente por el ORM de Flask-SQLAlchemy los objetos deben heredar Model para poder operar con las tablas
+    eventoId = db.Column(db.Integer, primary_key=True) #Column indica que la variable será justamente una columna de la tabla relacional, primary_key: Clave primaria de la tabla para poder relacionarla
+    nombre = db.Column(db.String(90), nullable=False)# nullable false: No puede ser nulo la columna
     fecha = db.Column(db.Date, nullable=False)
     hora = db.Column(db.Time, nullable=False)
     descripcion = db.Column(db.String(500), nullable= True)
     imagen = db.Column(db.String(40), nullable=False)
     tipo = db.Column(db.String(15), nullable=False)
     #Relación entre evento y usuario
-    usuarioId=db.Column(db.Integer, db.ForeignKey('usuario.usuarioId'), nullable=False)
-    usuario=db.relationship("Usuario", back_populates="eventos")
-    aprobado=db.Column(db.Boolean,nullable=False, default=False)
+    usuarioId=db.Column(db.Integer, db.ForeignKey('usuario.usuarioId'), nullable=False)  #ForeignKey clave para poder relacionar 1 objeto con muchos objetos en la relacion 1 -muchos. Se pone del lado de los muchos siempre
+    usuario=db.relationship("Usuario", back_populates="eventos") #Primer parametro de relationship indicamos el objeto clase que representamos, en este caso con la relacion Representamos un objeto del tipo Usuario en el de evento
+    aprobado=db.Column(db.Boolean,nullable=False, default=False) #El back_populates anterior nos indica cual es el nombre de la variable del otro objeto por el cual nos estamos relacionando
     #Relación entre evento y comentario
-    comentarios=db.relationship("Comentario", back_populates="evento", cascade="all,delete-orphan") #se pide la lista de comentarios
-    def __repr__(self):
+    comentarios=db.relationship("Comentario", back_populates="evento", cascade="all,delete-orphan") #se pide la lista de comentarios, el cascade nos dice como se comportará la relacion al modificar alguno de los onjetos de la relaciona
+    #... en el caso de que se borre un Evento, eliminara todos los comentarios de la relacion 1 muchos. parametro delete-orphan
+    def __repr__(self): #Es la funcion de representacion que nos muestra como se va imprimir el Model
         return '<Evento: %r %r %r %r %r %r %r %r >' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo,self.aprobado)
     #Convertir objeto en JSON
     def a_json(self):
@@ -45,7 +46,7 @@ class Evento(db.Model):
         return Persona(nombre=nombre, fecha=fecha, descripcion=descripcion,tipo=tipo,aprobado=aprobado)
 
 
-class Usuario(UserMixin,db.Model):
+class Usuario(UserMixin,db.Model): #Hereda model para poder trabajar con el ORM y las tablas
     usuarioId = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(20), nullable=False)
     apellido = db.Column(db.String(20), nullable=False)
@@ -54,9 +55,9 @@ class Usuario(UserMixin,db.Model):
     admin = db.Column(db.Boolean, nullable=False)
 
     #Relación entre evento y usuario
-    eventos=db.relationship("Evento", back_populates="usuario", cascade="all, delete-orphan")
+    eventos=db.relationship("Evento", back_populates="usuario", cascade="all, delete-orphan") # relacion de 1usuario muchos eventos, se borra el user, elimina todos los eventos. El nombre de la relacion en el Objeto Evento se llama usuario ->Indicado por back_populates
     #Relación entre usuario y comentario
-    comentarios=db.relationship("Comentario", back_populates="usuario", cascade="all, delete-orphan")
+    comentarios=db.relationship("Comentario", back_populates="usuario", cascade="all, delete-orphan") #Borra el usuario, elimina todos sus comentarios. El back_populates nos muestra que la relacion en el Obj Comentario con Usuario se llama "usuario"
 
     @property
     def notepassword(self):
@@ -85,8 +86,8 @@ class Comentario(db.Model):
     contenido = db.Column(db.String(500), nullable = False)
     fechahora = db.Column(db.DateTime, nullable=False)
     #Relación entre usuario y comentario
-    usuarioId=db.Column(db.Integer,db.ForeignKey('usuario.usuarioId'),nullable=False)
-    usuario=db.relationship("Usuario", back_populates="comentarios")
+    usuarioId=db.Column(db.Integer,db.ForeignKey('usuario.usuarioId'),nullable=False) #Establecimiento de la clave foranea para poder relacionar los muchos con el Objeto individual
+    usuario=db.relationship("Usuario", back_populates="comentarios") #La relacion establecida con el Obj Usuario nos muestra que alli se llama comentarios. relationship va a ser Usuario "Nombre de clase que se esta representando"
     #Relación entre evento y comentario
     eventoId=db.Column(db.Integer, db.ForeignKey('evento.eventoId'), nullable=False)
     evento= db.relationship("Evento", back_populates="comentarios")

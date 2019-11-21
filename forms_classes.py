@@ -7,7 +7,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed #Importa funcion
 from app import app, db
 
 #Clase de Registro
-class Registro(FlaskForm):
+class Registerform(FlaskForm):
 
     #Función de validación de nombre de usuario
     def nombre_usuario(form,field):
@@ -52,7 +52,7 @@ class Registro(FlaskForm):
     submit = SubmitField("Registrarse")
 
 
-class Logeo(FlaskForm):
+class Logform(FlaskForm):
 
         email = TextField('Email',
         [
@@ -71,7 +71,7 @@ class Logeo(FlaskForm):
         submit = SubmitField("Iniciar sesion")
 
 
-class Navegation(FlaskForm):
+class Navegationform(FlaskForm):
         fechainicio = DateField('Fecha',
         [
             validators.Optional()
@@ -92,7 +92,7 @@ class Navegation(FlaskForm):
         opciones = SelectField('Opción', choices=lista_opciones)
 
         submit = SubmitField("Filtrar")
-class Comentarios(FlaskForm):
+class Commentsform(FlaskForm):
     comentario = StringField('Comentario',
     [
         #Definición de validaciones
@@ -102,7 +102,7 @@ class Comentarios(FlaskForm):
     submit = SubmitField("Enviar")
 
 
-class EventoCrear(FlaskForm):
+class Eventform(FlaskForm):
     def opcional(field):
         field.validators.insert(0,validators.Optional())
         #Definición de campo String

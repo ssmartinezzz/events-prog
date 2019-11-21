@@ -2,15 +2,20 @@
 <div class="col-md-4">
   <div class="card-deck">
     <div class="card">
-      <img src="{{url_for('static',filename='Fondo/Geralt.jpg')}}" class="card-img-top img-fluid " alt="...">
+      <img src="{{url_for('static',filename='Fondo/'+evento["imagen"])}}" class="card-img-top img-fluid " alt="...">
       <div class="card-body">
-
         <h5 class="card-title">Evento: {{evento["nombre"]}}</h5>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-calendar" data-inline="false"></span>{{evento["fecha"]}}</p>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-map" data-inline="false"></span>{{evento["tipo"]}}</p>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
         <p class="card-text"><small class="text-muted">De: {{evento.usuario.nombre}}</small></p>
+        {% if (evento.usuario.admin==False) %}
         <a class="btn-btn-dark" href="{{url_for('detailedEvent',id=evento["eventoId"])}}"> Ver más</a>
+        {% endif %}
+        {% if (evento.usuario.admin==True) %}
+        <a type="button" class="btn btn-dark" href="{{url_for('eventbyAdmin',id=evento["eventoId"])}}">Ver<a>
+        {% endif %}
+
 
       </div>
     </div>
@@ -74,7 +79,7 @@
         <textarea class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
-        <a type="button"class="btn-btn-danger" href="{{url_for('deleteComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
+        <a type="button" class="btn-btn-danger" href="{{url_for('deleteComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
       </div>
     </div>
   </div>
@@ -85,35 +90,35 @@
 
 
 {% macro mostrar_error(campo) %}
-	{% if campo.errors %}
-	  <div class="alert alert-danger" role="alert">
-	  {% for error in campo.errors %}
-	   	{{ error }}<br>
-	  {% endfor %}
-	  </div>
-	{% endif %}
+{% if campo.errors %}
+<div class="alert alert-danger" role="alert">
+  {% for error in campo.errors %}
+  {{ error }}<br>
+  {% endfor %}
+</div>
+{% endif %}
 {% endmacro %}
 
 
 {% macro mostrar_campo(campo) %}
-	{{ campo.label }}
-	{{ campo(**kwargs)|safe }}
-	{{mostrar_error(campo)}}
+{{ campo.label }}
+{{ campo(**kwargs)|safe }}
+{{mostrar_error(campo)}}
 {% endmacro %}
 
 
 {% macro mostrar_campo_radio(campo) %}
-	{{ campo.label }}
-	<br/>
-	{% for subfield in campo %}
-			{{ subfield }}
-	  		{{ subfield.label }}
-	{% endfor %}
-	{{mostrar_error(campo)}}
+{{ campo.label }}
+<br />
+{% for subfield in campo %}
+{{ subfield }}
+{{ subfield.label }}
+{% endfor %}
+{{mostrar_error(campo)}}
 {% endmacro %}
 
 {% macro mostrar_campo_submit(campo) %}
-	{{ campo(**kwargs)|safe }}
+{{ campo(**kwargs)|safe }}
 {% endmacro %}
 
 {% macro expanded_event(evento) %}
@@ -121,7 +126,7 @@
 <div class="row">
   <div class="col-md-6">
     <div class="imagen">
-      <img src="{{url_for('static',filename='Fondo/messi.jpg')}}" class="card-img" alt="...">
+      <img src="{{url_for('static',filename='Fondo/'+evento["imagen"])}}" class="card-img-top img-fluid " alt="...">
     </div>
   </div>
   <div class="col-md-6">
@@ -131,13 +136,13 @@
         {{evento["nombre"]}}
       </div>
       <div class="form-group">
-          <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
+        <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
       </div>
       <div class="form-group">
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-calendar" data-inline="false"></span>{{evento["fecha"]}}</p>
       </div>
       <div class="form-group">
-<span class="iconify" data-icon="mdi:star-four-points-outline" data-inline="false"></span>{{evento["tipo"]}}
+        <span class="iconify" data-icon="mdi:star-four-points-outline" data-inline="false"></span>{{evento["tipo"]}}
 
       </div>
       <div class="form-group" class="col-md-2">
