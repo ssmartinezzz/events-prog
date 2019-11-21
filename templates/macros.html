@@ -10,7 +10,7 @@
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-map" data-inline="false"></span>{{evento["tipo"]}}</p>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
         <p class="card-text"><small class="text-muted">De: {{evento.usuario.nombre}}</small></p>
-        <a class="btn-btn-dark" href="{{url_for('mostrarevento',id=evento["eventoId"])}}"> Ver más</a>
+        <a class="btn-btn-dark" href="{{url_for('detailedEvent',id=evento["eventoId"])}}"> Ver más</a>
 
       </div>
     </div>
@@ -25,7 +25,7 @@
   <label>{{evento["nombre"]}}</label>
   <div class="row">
     <div class="col-md-3">
-      <a type="button" class="btn btn-dark" href="{{url_for('eventoad',id=evento["eventoId"])}}">Ver<a>
+      <a type="button" class="btn btn-dark" href="{{url_for('eventbyAdmin',id=evento["eventoId"])}}">Ver<a>
     </div>
     <div class="col-md-3">
       <a class="btn btn-danger" type="button" href="">Eliminar</a>
@@ -34,7 +34,7 @@
       {% if (evento.aprobado==False) %}
       <a type="button" class="btn btn-outline-success" href="{{url_for('checkEvent',id=evento["eventoId"])}}">Aprobar</a>
       {% endif %}
-      <a type="button" class="btn btn-outline-success" href="{{url_for('actualizar',id=evento["eventoId"])}}">Modificar</a>
+      <a type="button" class="btn btn-outline-success" href="{{url_for('updateEvent',id=evento["eventoId"])}}">Modificar</a>
 
     </div>
   </div>
@@ -53,7 +53,7 @@
         <textarea class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
-      
+
       </div>
     </div>
 
@@ -160,7 +160,7 @@
 
     </div>
     <div class="col-md-3">
-      <a type="button" class="btn btn-dark" href="{{url_for('actualizar',id=evento["eventoId"])}}">Modificar</a>
+      <a type="button" class="btn btn-dark" href="{{url_for('updateEvent',id=evento["eventoId"])}}">Modificar</a>
 
 
     </div>
@@ -169,7 +169,7 @@
 
     </div>
     <div class="col-md-3">
-      <a type="button" class="btn btn-dark" href="{{url_for('mostrarevento',id=evento["eventoId"])}}">Ver</a>
+      <a type="button" class="btn btn-dark" href="{{url_for('detailedEvent',id=evento["eventoId"])}}">Ver</a>
 
     </div>
 

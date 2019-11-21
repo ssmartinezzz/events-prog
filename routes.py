@@ -14,14 +14,9 @@ from flask_login import login_required, login_user, logout_user, current_user, L
 
 
 
-
-
-def mysql_query(query):
-    return query.statement.compile(compile_kwargs={"literal_binds": True})
-
 @login_manager.unauthorized_handler #Método que cuando intente acceder a ruta sin estar logeado muestre lo siguiente.
 def unauthorized_callback():
-    flash('Para continuar debe iniciar sesión.','warning')
+    flash('Para continuar debe iniciar sesión.')
     return redirect(url_for('index'))
 
 @app.route('/logout')
@@ -64,11 +59,9 @@ def index(pag=1,fechainicio='',fechafinal='',opciones=''):
         eventos = eventos.filter(Evento.tipo==opciones)
     eventos=eventos.order_by(Evento.fecha.desc())
     eventos=eventos.paginate(pag,pag_tam,error_out=False)
-
-
-
-
     return render_template('index.html', formularionav=formularionav,eventos=eventos)
+
+
 # Ruta para el inicio de sesion
 @app.route('/iniciar', methods=["POST", "GET"])
 def logIn():
@@ -88,7 +81,7 @@ def logIn():
 
 # RUTA PARA REGISTRO DE UN NUEVO USUARIO
 @app.route('/registro', methods=["POST", "GET"])
-def registro():
+def register():
     formulario = Registro()  # Instanciar formulario de registro
     if formulario.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
         mostrar_datos(formulario)  # Imprimir datos por consola
@@ -109,14 +102,14 @@ def menu():
 #url que lista los eventos de cualquier usuario (antes de sesiones lista solo lo del usuarioId 301)
 @app.route('/mis-eventos')
 @login_required
-def eventos():
+def myEvents():
     listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
     return render_template('my-events.html',listaeventos=listaeventos)
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
 @app.route('/creacion', methods=["POST", "GET"])
 @login_required
-def crear():
+def createNewEvent():
     formulario = EventoCrear()
     if formulario.validate_on_submit():
         f = formulario.imagen.data  # Obtener imagen
@@ -126,13 +119,13 @@ def crear():
         showEve(formulario)
         listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
         createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,current_user.usuarioId)
-        return redirect(url_for('eventos'))
-    return render_template('create-event.html', formulario=formulario, destino="crear")
+        return redirect(url_for('myEvents'))
+    return render_template('create-event.html', formulario=formulario, destino="createNewEvent")
 
 #Ruta que nos permite actualizar los datos de un evento traido de db, donde al ser igualados y llenados en el formulario podemos efectuar los cambios
 @app.route('/update/evento/<id>', methods=["POST", "GET"])
 @login_required
-def actualizar(id):
+def updateEvent(id):
     evento = db.session.query(Evento).get(id)
     formulario=EventoCrear(obj=evento)
     EventoCrear.opcional(formulario.imagen)
@@ -146,7 +139,7 @@ def actualizar(id):
         evento.descripcion=formulario.desc.data
         evento.imagen=formulario.imagen.data
 
-        actualizareve(evento)
+        updateDBEvent(evento)
         return redirect(url_for('index'))
     else:
             formulario.titulo.data=evento.nombre
@@ -155,52 +148,23 @@ def actualizar(id):
             formulario.opciones.data=evento.tipo
             formulario.desc.data=evento.descripcion
             formulario.imagen.data=evento.imagen
-    return render_template('create-event.html', formulario=formulario, destino="actualizar",evento=evento)
+    return render_template('create-event.html', formulario=formulario, destino="updateEvent",evento=evento)
 
-
-@app.route('/evento/actualizar/<evento>')
+@app.route('/evento/borrar/<id>')
 @login_required
-def actualizareve(evento):
-    print("Actualizando evento!")
-    db.session.add(evento)
+def deleteEvent(id):
+    evento= db.session.query(Evento).get(id)
+    db.session.delete(evento)
     try:
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
+    flash('Evento eliminado exitosamente!')
+    return redirect(url_for('myEvents'))
 
-
-
-# RUTA Y FUNCION PARA LISTAR LOS EVENTOS CON LOS COMENTARIOS Y CREARLOS
-@app.route('/evento/<id>', methods=["POST", "GET"])
-def mostrarevento(id):
-    evento = db.session.query(Evento).get(id)
-    commentList =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
-    form = Comentarios()
-    if form.validate_on_submit():
-        flash('Comentario Enviado')
-        pCommentary(form)
-        createComment(form.comentario.data,current_user.usuarioId,id)
-        return redirect(url_for('mostrarevento',id=id))
-    return render_template('evento.html', id=id, evento=evento,form=form,commentList=commentList)
-
-@app.route('/comentary/create/<contenido>/<usuarioId>/<eventoId>')
-@login_required
-def createComment(contenido,usuarioId,eventoId):
-    #Funcion que permite por el panel de mis eventos eliminar el evento que se toque con el respectivo id
-    usuario=db.session.query(Usuario).get(usuarioId)
-    evento=db.session.query(Evento).get(eventoId)
-    fechahora=db.func.current_timestamp()
-    comment = Comentario(contenido=contenido,fechahora=fechahora,evento=evento,usuario=usuario)
-    db.session.add(comment)
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        mensaje=str(e._message())
-        getLogEvents(mensaje)
-@app.route('/micomentario/eliminar/<id>')
+@app.route('/comentario/borrar/<id>')
 @login_required
 def deleteMyComment(id):
     comentario = db.session.query(Comentario).get(id)
@@ -213,22 +177,20 @@ def deleteMyComment(id):
         mensaje=str(e._message())
         getLogEvents(mensaje)
     flash('El comentario ha sido borrado con exito!')
-    return redirect(url_for('mostrarevento',id=eventID))
+    return redirect(url_for('detailedEvent',id=eventID))
 
-
-@app.route('/evento/eliminar/<id>')
-@login_required
-def deleteEvent(id):
-    evento= db.session.query(Evento).get(id)
-    db.session.delete(evento)
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        mensaje=str(e._message())
-        getLogEvents(mensaje)
-    flash('Evento eliminado exitosamente!')
-    return redirect(url_for('eventos'))
+# RUTA Y FUNCION PARA LISTAR LOS EVENTOS CON LOS COMENTARIOS Y CREARLOS
+@app.route('/evento/<id>', methods=["POST", "GET"])
+def detailedEvent(id):
+    evento = db.session.query(Evento).get(id)
+    commentList =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
+    form = Comentarios()
+    if form.validate_on_submit():
+        flash('Comentario Enviado')
+        pCommentary(form)
+        createComment(form.comentario.data,current_user.usuarioId,id)
+        return redirect(url_for('detailedEvent',id=id))
+    return render_template('evento.html', id=id, evento=evento,form=form,commentList=commentList)
 
 """"RUTAS QUE SOLO PUEDE ACCEDER EL ADMINISTRADOR DEL SITIO, CONTIENE LAS FUNCIONES"""
 
@@ -239,14 +201,13 @@ def menuadmin():
     if not current_user.admin:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
-
     else:
         return render_template('admin-menu.html')
 
 #Ruta que le permite visibilizar los eventos disponibles a controlar.
 @app.route('/admin/regular/')
 @login_required
-def regular():
+def eventsControl():
     if not current_user.admin:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
@@ -256,7 +217,7 @@ def regular():
 #Ruta para que el admin regule un evento "x".
 @app.route('/admin/evento/<id>',methods=["POST","GET"])
 @login_required
-def eventoad(id):
+def eventbyAdmin(id):
     if current_user.admin:
         evento = db.session.query(Evento).get(id)
         comentadmin =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
@@ -287,7 +248,7 @@ def deletedByAdmin(id):
         getLogEvents(mensaje)
     print(email)
     flash('Evento eliminado exitosamente!')
-    return redirect(url_for('regular'))
+    return redirect(url_for('eventsControl'))
 
 
 #El administrador es capaz de aprobar el evento mediante esta funcion
@@ -297,16 +258,14 @@ def checkEvent(id):
     if not current_user.admin:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
-
     evento=db.session.query(Evento).get(id)
     if evento.aprobado==True:
         print("Evento ya aprobado con anterioridad")
         return redirect(url_for('index'))
-
     elif evento.aprobado==False:
         evento.aprobado=True
         email=evento.usuario.email
-        actualizareve(evento)
+        updateDBEvent(evento)
         sendMail(email,'Su evento ha sido aprobado por el administrador!','mail/event-confirm')
         try:
             db.session.commit()
@@ -316,7 +275,7 @@ def checkEvent(id):
             getLogEvents(mensaje)
         print(email)
         flash('Evento aprobado!')
-        return redirect(url_for('regular',evento=evento))
+        return redirect(url_for('eventsControl',evento=evento))
 
 
 #Ruta que le permite al administrador del sistema eliminar el comentario deseado de un evento "x"
@@ -336,4 +295,4 @@ def deleteComment(id):
         mensaje=str(e._message())
         getLogEvents(mensaje)
     flash('El comentario ha sido borrado con exito!')
-    return redirect(url_for('eventoad',id=eventID))
+    return redirect(url_for('eventbyAdmin',id=eventID))

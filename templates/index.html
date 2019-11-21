@@ -31,31 +31,32 @@
 
 		</div>
 	</div>
-
+<div class ="pagination-space">
 	<div class="row">
 		{% for evento in eventos.items %}
 		{{mostrarevents(evento)}}
 		{% endfor %}
 	</div>
+	</div>
 
-
+<div class="pagination">
 		<div class="row">
 			{% if eventos.has_prev %}
-			<a class="page-link" "{{ url_for('index', pag=eventos.prev_num,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data) }}">Anterior</a>
+			<a  href="{{ url_for('index', pag=eventos.prev_num,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data) }}">Anterior</a>
 			{% else %} Anterior {% endif %}
-			|
-
 			{% for i in range(1,(eventos.pages+1)) %}
 			{% if eventos.page == i %}
-			{{i}}
+			<a>{{i}}</a>
 			{% else %}
-			<a class="page-item active" href="{{ url_for('index', pag=i,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data ) }}">{{i}}</a>
+			<a href="{{ url_for('index', pag=i,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data ) }}">{{i}}</a>
 			{% endif %}
 			{% endfor %}
 			|
 			{% if eventos.has_next %}
-			<a class="page-link" href="{{ url_for('index', pag=eventos.next_num,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data) }}">Siguiente</a>
+			<a href="{{ url_for('index', pag=eventos.next_num,fechainicio=formularionav.fechainicio.data,fechafinal=formularionav.fechafinal.data,opciones=formularionav.opciones.data) }}">Siguiente</a>
 			{% else %} Siguiente {% endif %}
+		</div>
+		</div>
 		</div>
 
 	{% endblock %}

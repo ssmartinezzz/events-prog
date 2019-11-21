@@ -10,10 +10,11 @@
   <div class="Entorno">
     {{expanded_event(evento)}}
     <div class="reporte">
-      <label> Herramientas admin</label>
       <div class="row">
         <div class="col-md-4">
+          {% if evento.aprobado==False %}
           <a type="button" class="btn btn-outline-success" href="{{url_for('checkEvent',id=evento["eventoId"])}}">Aprobar</a>
+          {% endif %}
         </div>
         <div class="col-md-2">
         </div>

@@ -11,7 +11,7 @@
 		</div>
 		<div class="col-md-8">
 			<h2 id=registrotitulo>Formulario de regístro</h2>
-			<form method="POST" action="{{ url_for("registro") }}">
+			<form method="POST" action="{{ url_for("register") }}">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 				<div class="form-group row">
 					{{mostrar_campo(formulario.nombre, class='form-control')}}

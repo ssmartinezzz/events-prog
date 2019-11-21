@@ -71,7 +71,7 @@
               <a type=button class="btn btn-primary" href="{{url_for('logIn')}}">Login</a>
             </div>
             <div class="form-group col-md-4">
-              <a type=button class="btn btn-primary" href="{{url_for('registro')}}">Registrarse</a>
+              <a type=button class="btn btn-primary" href="{{url_for('register')}}">Registrarse</a>
             </div>
             {% endif %}
             <div class="form-group col-md-2">
@@ -118,10 +118,10 @@
           <h5 class="text-uppercase">Ir a...</h5>
           <ul class="list-unstyled">
             <li>
-              <a href="{{url_for('crear')}}">Crear evento</a>
+              <a href="{{url_for('createNewEvent')}}">Crear evento</a>
             </li>
             <li>
-              <a href="{{url_for('eventos')}}">Ver mis eventos</a>
+              <a href="{{url_for('myEvents')}}">Ver mis eventos</a>
             </li>
             <li>
               <a href="{{url_for('index')}}">Ver eventos globales</a>

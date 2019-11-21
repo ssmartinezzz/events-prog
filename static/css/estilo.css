@@ -9,10 +9,6 @@ body {
 #filtro {
   border: 1px solid grey;
   background-color: white;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: -100px;
-  padding-right: -100p;
   margin-top: 30px;
   margin-bottom: 50px;
 
@@ -142,4 +138,29 @@ body {
   margin-top: 50px;
   margin-bottom: 50px;
   color: white;
+}
+
+
+
+.pagination{
+    margin: 20px 0;
+}
+.pagination a{
+    text-align: center;
+    display:list-item;
+    margin-right: 10px;
+    padding: 10px 20px;
+    color:#000000;
+    background: #ffffff;
+
+    text-decoration:none;
+}
+.pagination a:hover{
+    background-color:#0d8dee;
+
+}
+
+.pagination-space{
+    min-height: 1px;
+    width: auto;
 }

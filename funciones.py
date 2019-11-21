@@ -34,10 +34,8 @@ def navbar(formularionav):
 def listEvent():
     eventlist =db.session.query(Evento).all()
     return eventlist
-#@app.route('/evento/crear/<eventoId>/<nombre>/<fechahora>/<descripcion>/<imagen>')
+
 def createEvent(nombre,fecha,hora,descripcion,imagen,tipo,usuarioId):
-    #EJ: /persona/crear/Marcos/Gonzales/1999-05-01
-    #Crear una persona
     usuario=db.session.query(Usuario).get(usuarioId)
     evento = Evento(usuario=usuario,nombre=nombre,fecha=fecha,hora=hora,descripcion=descripcion,imagen=imagen,tipo=tipo)
     #Agregar a db
@@ -51,7 +49,7 @@ def createEvent(nombre,fecha,hora,descripcion,imagen,tipo,usuarioId):
         getLogEvents(mensaje)
 
 def createUser(nombre,apellido,email,password,admin):
-    #EJ: /persona/crear/Marcos/Gonzales/1999-05-01
+
     #Crear una persona
     usuario = Usuario(nombre=nombre, apellido=apellido,email=email,notepassword=password,admin=admin)
     #Agregar a db
@@ -63,3 +61,31 @@ def createUser(nombre,apellido,email,password,admin):
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
+
+def updateDBEvent(evento):
+    print("Actualizando evento!")
+    db.session.add(evento)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje=str(e._message())
+        getLogEvents(mensaje)
+
+def createComment(contenido,usuarioId,eventoId):
+    #Funcion que permite por el panel de mis eventos eliminar el evento que se toque con el respectivo id
+    usuario=db.session.query(Usuario).get(usuarioId)
+    evento=db.session.query(Evento).get(eventoId)
+    fechahora=db.func.current_timestamp()
+    comment = Comentario(contenido=contenido,fechahora=fechahora,evento=evento,usuario=usuario)
+    db.session.add(comment)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        mensaje=str(e._message())
+        getLogEvents(mensaje)
+
+
+def mysql_query(query):
+    return query.statement.compile(compile_kwargs={"literal_binds": True})

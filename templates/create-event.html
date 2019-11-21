@@ -8,13 +8,13 @@
   <div class="row">
     <div class="col-md-12">
       <div class="creacion">
-        {% if(destino=="crear") %}
+        {% if(destino=="createNewEvent") %}
         <h1 id="registrotitulo">Crear Evento</h1>
         <form method="POST" action="{{ url_for(destino)}}" enctype="multipart/form-data">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           {% endif %}
-          {% if(destino=="actualizar") %}
-          <h1 id="registrotitulo">Crear Evento</h1>
+          {% if(destino=="updateEvent") %}
+          <h1 id="registrotitulo">Modificar Evento</h1>
           <form method="POST" action="{{ url_for(destino,id=evento["eventoId"])}}" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             {% endif %}
@@ -31,10 +31,10 @@
               {{mostrar_campo(formulario.opciones,class='form-control')}}
             </div>
             <div>
-              {% if(destino=="crear") %}
+              {% if(destino=="createNewEvent") %}
               {{ mostrar_campo(formulario.imagen , class='form-control')}}
               {% endif %}
-              {% if(destino=="actualizar") %}
+              {% if(destino=="updateEvent") %}
 
               <img style="width:130px;margin-left:20px;margin-bottom:-25px;" src="{{url_for('static', filename='Fondo/'+formulario.imagen.data)}}">
               {% endif %}
