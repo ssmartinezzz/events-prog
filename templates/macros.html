@@ -2,7 +2,7 @@
 <div class="col-md-4">
   <div class="card-deck">
     <div class="card">
-      <img src="{{url_for('static',filename='Fondo/'+evento["imagen"])}}" class="card-img-top img-fluid " alt="...">
+      <img class="card-img-top img-fluid" alt="..."src="{{url_for('static',filename='Fondo/'+evento["imagen"])}}">
       <div class="card-body">
         <h5 class="card-title">Evento: {{evento["nombre"]}}</h5>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-calendar" data-inline="false"></span>{{evento["fecha"]}}</p>
@@ -55,7 +55,7 @@
     <div class="media">
       <div class="media-body">
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario.usuario.nombre}}</h3>
-        <textarea class="form-control">{{comentario["contenido"]}}</textarea>
+        <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
 
@@ -76,7 +76,7 @@
     <div class="media">
       <div class="media-body">
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario.usuario.nombre}}</h3>
-        <textarea class="form-control">{{comentario["contenido"]}}</textarea>
+        <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
         <a type="button" class="btn-btn-danger" href="{{url_for('deleteComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
@@ -126,7 +126,7 @@
 <div class="row">
   <div class="col-md-6">
     <div class="imagen">
-      <img src="{{url_for('static',filename='Fondo/'+evento["imagen"])}}" class="card-img-top img-fluid " alt="...">
+      <img class="card-img-top img-fluid " alt="..."src="{{url_for('static',filename='Fondo/'+evento["imagen"])}}" >
     </div>
   </div>
   <div class="col-md-6">

@@ -164,7 +164,13 @@ def deleteEvent(id):
         mensaje=str(e._message())
         getLogEvents(mensaje)
     flash('Evento eliminado exitosamente!')
-    return redirect(url_for('myEvents'))
+    if current_user.admin==True:
+        return redirect(url_for('eventsControl'))
+    else:
+        return redirect(url_for('myEvents'))
+
+
+
 
 @app.route('/comentario/borrar/<id>')
 @login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
@@ -228,27 +234,6 @@ def eventbyAdmin(id):
     elif  not current_user.admin:
         flash('Forbidden route, unable to access!')
         return redirect(url_for('index'))
-
-
-
-#Ruta que elimina el evento que el admin desee, (NO ES DESAPROBAR)
-@app.route('/admin/evento/eliminar/<id>')
-@login_required
-def deletedByAdmin(id):
-    if not current_user.admin:
-        flash('Forbidden route, unable to access!')
-        return redirect(url_for('index'))
-    evento= db.session.query(Evento).get(id)
-    db.session.delete(evento)
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        mensaje=str(e._message())
-        getLogEvents(mensaje)
-    print(email)
-    flash('Evento eliminado exitosamente!')
-    return redirect(url_for('eventsControl'))
 
 
 #El administrador es capaz de aprobar el evento mediante esta funcion
