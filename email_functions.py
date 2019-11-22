@@ -6,6 +6,7 @@ from models import *
 from errors import getLogEvents
 from threading import Thread
 import os, time, smtplib
+
 def confMsg(to, subject, template, **kwargs):
     #Configurar asunto, emisor y destinatarios
     msg = Message( subject, sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])

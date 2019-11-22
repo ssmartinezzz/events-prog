@@ -14,24 +14,11 @@ from flask_login import login_required, login_user, logout_user, current_user, L
 
 
 
-@login_manager.unauthorized_handler #Método que cuando intente acceder a ruta sin estar logeado muestre lo siguiente.
+@login_manager.unauthorized_handler #Método que cuando intente acceder a ruta sin estar logeado muestre lo siguiente. unauthorized_handler nos permite presonalizar este tipo de error sin tener que abortar con el error 401
 def unauthorized_callback():
     flash('Para continuar debe iniciar sesión.')
     return redirect(url_for('index'))
 
-@app.route('/logout')
-#Limitar el acceso a los usuarios registrados
-@login_required
-def logout():
-    logout_user()
-    #Insntanciar formulario de Login
-    formularionav=Navegationform()
-    formulariolog = Logform()
-    pag=1
-    pag_tam=6
-    eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
-    flash('Logged off!')
-    return render_template('index.html', formulariolog=formulariolog,formularionav=formularionav,eventos=eventos)
 
 
 
@@ -67,9 +54,9 @@ def index(pag=1,fechainicio='',fechafinal='',opciones=''):
 def logIn():
     formulariolog = Logform()  # Instanciar formulario de registro
     if formulariolog.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
-        usuario=Usuario.query.filter_by(email=formulariolog.email.data).first()
-        if usuario is not None and usuario.verificar_pass(formulariolog.password.data):
-            login_user(usuario,False)
+        usuario=Usuario.query.filter_by(email=formulariolog.email.data).first() #Obtengo el mail del usuario de la bd y lo guardo en un objeto para poder pasarlo por parametro al login_user del LoginManager
+        if usuario is not None and usuario.verificar_pass(formulariolog.password.data): # Verifico la password encriptada en la bd y la comparo con la del form
+            login_user(usuario,False) # Realizo el login del usuario, el False denota que el campo de remember me no este activado
             flash('Usuario Logeado exitosamente')  # Mostrar mensaje
             getUser(formulariolog)  # Imprimir datos por consola
             return redirect(url_for('index'))
@@ -77,6 +64,21 @@ def logIn():
             flash('Usuario contraseñas incorrectos!')
             return redirect(url_for('index'))
     return render_template('login.html', formulariolog=formulariolog)
+
+@app.route('/logout')
+#Limitar el acceso a los usuarios registrados
+@login_required
+def logout():
+    logout_user() # Metodo del LoginManager que permite deslogear una cuenta
+    #Insntanciar formulario de Login
+    formularionav=Navegationform()
+    formulariolog = Logform()
+    pag=1
+    pag_tam=6
+    eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
+    flash('Logged off!')
+    return render_template('index.html', formulariolog=formulariolog,formularionav=formularionav,eventos=eventos)
+
 
 
 # RUTA PARA REGISTRO DE UN NUEVO USUARIO
@@ -95,20 +97,20 @@ def register():
 
 
 @app.route('/menu')
-@login_required
+@login_required  #Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def menu():
     return render_template('main-menu.html')
 
 #url que lista los eventos de cualquier usuario (antes de sesiones lista solo lo del usuarioId 301)
 @app.route('/mis-eventos')
-@login_required
+@login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def myEvents():
     listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
     return render_template('my-events.html',listaeventos=listaeventos)
 
 # RUTA Y DUNCION PARA LA CREACION DE UN EVENTO
 @app.route('/creacion', methods=["POST", "GET"])
-@login_required
+@login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def createNewEvent():
     formulario = Eventform()
     if formulario.validate_on_submit():
@@ -124,7 +126,7 @@ def createNewEvent():
 
 #Ruta que nos permite actualizar los datos de un evento traido de db, donde al ser igualados y llenados en el formulario podemos efectuar los cambios
 @app.route('/update/evento/<id>', methods=["POST", "GET"])
-@login_required
+@login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def updateEvent(id):
     evento = db.session.query(Evento).get(id)
     formulario=Eventform(obj=evento)
@@ -151,7 +153,7 @@ def updateEvent(id):
     return render_template('create-event.html', formulario=formulario, destino="updateEvent",evento=evento)
 
 @app.route('/evento/borrar/<id>')
-@login_required
+@login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def deleteEvent(id):
     evento= db.session.query(Evento).get(id)
     db.session.delete(evento)
@@ -165,7 +167,7 @@ def deleteEvent(id):
     return redirect(url_for('myEvents'))
 
 @app.route('/comentario/borrar/<id>')
-@login_required
+@login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def deleteMyComment(id):
     comentario = db.session.query(Comentario).get(id)
     eventID= comentario.eventoId
@@ -196,7 +198,7 @@ def detailedEvent(id):
 
 #Ruta que muestra el menu de opciones disponibles al administrador
 @app.route('/admin/menu')
-@login_required
+@login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def menuadmin():
     if not current_user.admin:
         flash('Forbidden route, unable to access!')
@@ -238,8 +240,6 @@ def deletedByAdmin(id):
         return redirect(url_for('index'))
     evento= db.session.query(Evento).get(id)
     db.session.delete(evento)
-    email=evento.usuario.email
-    sendMail(email,'Su evento ha sido borrado!','mail/deleted')
     try:
         db.session.commit()
     except SQLAlchemyError as e:

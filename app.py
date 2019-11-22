@@ -22,7 +22,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') #Trae la clave secreta d
 csrf = CSRFProtect(app)# Es util usar un token CSRF, permite que nuestra aplicación haga las peticiones desde nuestro sitio. En esta linea estamos Instanciando el modulo de flask que nos permite esta funcionalidad
 db = SQLAlchemy(app) #Creamos el objeto que tiene todas las funcionalidades del ORM
 email= Mail(app)  #Creamos el objetos que tiene las funcionalidades de los mail.
-login_manager=LoginManager(app)
+login_manager=LoginManager(app)# Instanciamos el objeto del modulo Flask Login llamado login manager el cual nos permite operar con las sesiones
 
 if __name__ == '__main__':#Asegura que solo se ejectue el servidor cuando se ejecute el script directamente
 	from routes import *

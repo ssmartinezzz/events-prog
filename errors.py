@@ -4,14 +4,11 @@ import datetime
 #Manejar error de página no encontrada
 @app.errorhandler(404)
 def page_not_found(e):
-    #Si la solicitud acepta json y no HTML
-    if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
-        #Responder con JSON
-        response = jsonify({'error': 'not found'})
+    if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:#Si la solicitud acepta json y no HTML
+        response = jsonify({'error': 'not found'})#Responder con JSON
         response.status_code = 404
         return response
-    #Sino responder con template HTML
-    return render_template('404.html'), 404
+    return render_template('404.html'), 404#Sino responder con template HTML
 
 #Manejar error de error interno
 @app.errorhandler(500)

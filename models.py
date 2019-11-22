@@ -21,7 +21,8 @@ class Evento(db.Model): # Obligatoriamente por el ORM de Flask-SQLAlchemy los ob
     #... en el caso de que se borre un Evento, eliminara todos los comentarios de la relacion 1 muchos. parametro delete-orphan
     def __repr__(self): #Es la funcion de representacion que nos muestra como se va imprimir el Model
         return '<Evento: %r %r %r %r %r %r %r %r >' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo,self.aprobado)
-    #Convertir objeto en JSON
+
+    #Metodo parecido a ToString de java que nos ayuda, en este caso a convertir los atributos de nuestro objeto a formato Json
     def a_json(self):
         evento_json = {
             'eventoId': url_for('listEventsbyApi', id=self.eventoId, _external=True), #Ruta para acceder a la persona
@@ -36,17 +37,17 @@ class Evento(db.Model): # Obligatoriamente por el ORM de Flask-SQLAlchemy los ob
         }
         return evento_json
     @staticmethod
-    #Convertir JSON a objeto
-    def desde_json(persona_json):
+    #Metodo que estático no hace falta instanciarlo, perteneciente a la clase Evento, que podemos pasarle un Json y nos traera los atributos y los convertira adecuadamente a un Objeto evento
+    def desde_json(evento_json):
         nombre = evento_json.get('nombre')
         fecha = evento_json.get('fecha')
         descripcion = evento_json.get('descripcion')
         tipo=evento_json.get('tipo')
         aprobado=evento_json.get('aprobado')
-        return Persona(nombre=nombre, fecha=fecha, descripcion=descripcion,tipo=tipo,aprobado=aprobado)
+        return Evento(nombre=nombre, fecha=fecha, descripcion=descripcion,tipo=tipo,aprobado=aprobado)
 
 
-class Usuario(UserMixin,db.Model): #Hereda model para poder trabajar con el ORM y las tablas
+class Usuario(UserMixin,db.Model): #Hereda model para poder trabajar con el ORM y las tablas. Tambien hereda el userMixin que hace que usuario herede todo lo de  is_aunthenticated
     usuarioId = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(20), nullable=False)
     apellido = db.Column(db.String(20), nullable=False)
@@ -59,7 +60,7 @@ class Usuario(UserMixin,db.Model): #Hereda model para poder trabajar con el ORM 
     #Relación entre usuario y comentario
     comentarios=db.relationship("Comentario", back_populates="usuario", cascade="all, delete-orphan") #Borra el usuario, elimina todos sus comentarios. El back_populates nos muestra que la relacion en el Obj Comentario con Usuario se llama "usuario"
 
-    @property
+    @property #No permite acceder a la password del Usuario
     def notepassword(self):
         raise AttributeError('La password no puede leerse')
     #Al setear la pass generar un hash
@@ -72,10 +73,12 @@ class Usuario(UserMixin,db.Model): #Hereda model para poder trabajar con el ORM 
     #Al verififcar pass comparar hash del valor ingresado con el de la db
     def verificar_pass(self, notepassword):
         return check_password_hash(self.password, notepassword)
+
+#Asi es como se imprime el objeto Usuario mediante su constructor
     def __repr__(self):
         return '<Usuario: %r %r %r %r %r %r >' % (self.usuarioId,self.nombre,self.apellido, self.email, self.password,self.admin)
 
-@login_manager.user_loader #Funcion por defecto que tengo que especificar de como buscarlo
+@login_manager.user_loader #Funcion por defecto que tengo que especificar de como busco el Objeto del usuario y lo cargo en la session
 def load_user(user_id):
     return Usuario.query.get(int(user_id)) #Buscar el usuario por id para logear
 
@@ -89,10 +92,11 @@ class Comentario(db.Model):
     usuarioId=db.Column(db.Integer,db.ForeignKey('usuario.usuarioId'),nullable=False) #Establecimiento de la clave foranea para poder relacionar los muchos con el Objeto individual
     usuario=db.relationship("Usuario", back_populates="comentarios") #La relacion establecida con el Obj Usuario nos muestra que alli se llama comentarios. relationship va a ser Usuario "Nombre de clase que se esta representando"
     #Relación entre evento y comentario
-    eventoId=db.Column(db.Integer, db.ForeignKey('evento.eventoId'), nullable=False)
+    eventoId=db.Column(db.Integer, db.ForeignKey('evento.eventoId'), nullable=False) #Clave con la que relacionamos 2 tablas en un modelo relacional,usando clave primaria y esta clave, siempre va del lado de los muchos
     evento= db.relationship("Evento", back_populates="comentarios")
     def __repr__(self):
         return '<Comentario: %r %r %r >' % (self.comentarioId,self.texto, self.fechahora)
+
     def a_json(self):
         comentario_json = {
             'comentarioId':url_for('convertToJSON', id=self.comentarioId, _external=True),
@@ -100,5 +104,14 @@ class Comentario(db.Model):
             'fechahora': self.fechahora
         }
         return comentario_json
+
+    @staticmethod
+    #Metodo que estático no hace falta instanciarlo, perteneciente a la clase Comentario, que podemos pasarle un Json y nos traera los atributos y los convertira adecuadamente a un Objeto comentario
+    def desde_json(comentario_json):
+        contenido = evento_json.get('contenido')
+        fechahora = evento_json.get('fechahora')
+        return Comentario(contenido=contenido,fechahora=fechahora) #Crea el objeto
+
+
     def get_id(self):
-           return (self.comentarioId)
+         return (self.comentarioId)

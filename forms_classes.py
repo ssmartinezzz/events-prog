@@ -57,7 +57,7 @@ class Logform(FlaskForm):
         email = TextField('Email',
         [
             validators.Required(message = "Email requerido"),
-            validators.length(min=4, max=25, message='La longitud del nombre de usuario no es válida'),
+            validators.length(min=4, max=40, message='La longitud del nombre de usuario no es válida'),
             #Validación definida por el usuario
 
         ])
@@ -124,8 +124,8 @@ class Eventform(FlaskForm):
     tipos_evento = [
     ('Deportivo','Deportivo'),
     ('Aprendizaje','Aprendizaje'),
-    ('FIesta','Fiesta'),
-    ('Fiesta','Otro')
+    ('Fiesta','Fiesta'),
+    ('Otro','Otro')
     ]
     opciones = SelectField('Tipo de evento', choices=tipos_evento)
         #Definición de campo de archivo

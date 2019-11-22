@@ -21,12 +21,12 @@ def listAllEventsApi():
 @app.route('/admin/listareventos/<id>',methods=['GET'])
 def listEventsbyApi(id):
     evento =  db.session.query(Evento).get(id)
-    return jsonify({'Evento':[evento.a_json()]})
+    return jsonify({'Evento':[evento.a_json()]}) #Nos convierte a Json el objeto evento que estamos trayendo de la consulta de base de datos, y lo convertimos usando el metodo creado en el onjeto de la clase
 
 #Aprobar evento por id
 #curl -X POST -i -H  "Content-Type:application/json" -H "Accept:application/json" http://127.0.0.1:5000/admin/evento/aprobar/id
 @app.route('/admin/evento/aprobar/<id>',methods=['POST'])
-@csrf.exempt
+@csrf.exempt #Nos permite exceptuar la validacion del csrf, para que nuestra Api si pueda realizar peticiones al servidor. Si no lo hicieramos obtendríamos Bad request por la seguridad que el token nos brinda
 def aprobarEventosApi(id):
     evento=db.session.query(Evento).get(id)
     if (evento.aprobado==True):
@@ -72,8 +72,6 @@ def apiActualizarEvento(id):
 def deleteApiEvent(id):
     eventoaeliminar= db.session.query(Evento).get(id)
     db.session.delete(eventoaeliminar)
-    email=evento.usuario.email
-    sendMail(email,'Su evento ha sido borrado!','mail/deleted')
     try:
         db.session.commit()
     except SQLAlchemyError as e:
