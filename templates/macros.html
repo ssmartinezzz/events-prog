@@ -9,10 +9,9 @@
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="typcn-map" data-inline="false"></span>{{evento["tipo"]}}</p>
         <p class="card-text" id="ICONO"><span class="iconify" data-icon="il-clock" data-inline="false"></span>{{evento["hora"]}}</p>
         <p class="card-text"><small class="text-muted">De: {{evento.usuario.nombre}}</small></p>
-        {% if (evento.usuario.admin==False) %}
-        <a class="btn-btn-dark" href="{{url_for('detailedEvent',id=evento["eventoId"])}}"> Ver más</a>
-        {% endif %}
-        {% if (evento.usuario.admin==True) %}
+        {% if current_user.admin==False or not current_user.is_authenticated %}
+        <a  class="btn-btn-dark" href="{{url_for('detailedEvent',id=evento["eventoId"])}}"> Ver más</a>
+        {% else %}
         <a type="button" class="btn btn-dark" href="{{url_for('eventbyAdmin',id=evento["eventoId"])}}">Ver<a>
         {% endif %}
 
@@ -58,6 +57,12 @@
         <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
         <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
         <h3 class="mt-0 font-weight-bold blue-text"></h3>
+        {% if current_user.usuarioId==comentario.usuarioId and current_user.admin==False %}
+        <a type="button"class="botonComent" href="{{url_for('deleteMyComment',id=comentario["comentarioId"])}}">Eliminar</a>
+        {% endif %}
+        {% if current_user.admin==True %}
+        <a type="button" class="botonComent" href="{{url_for('deleteComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
+        {% endif %}
 
       </div>
     </div>
@@ -68,26 +73,6 @@
 </div>
 
 {% endmacro %}
-{% macro comentariosadmin (comentario) %}
-<div class="row">
-  <div class="col-md-2">
-  </div>
-  <div class=col-md-8>
-    <div class="media">
-      <div class="media-body">
-        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="gridicons:user-circle" data-inline="false"></span>{{comentario.usuario.nombre}}</h3>
-        <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
-        <h3 class="mt-0 font-weight-bold blue-text"></h3>
-        <h3 class="mt-0 font-weight-bold blue-text"><span class="iconify" data-icon="wi:time-8" data-inline="false"></span>{{comentario["fechahora"]}}</h3>
-        <a type="button" class="btn-btn-danger" href="{{url_for('deleteComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2">
-  </div>
-</div>
-{% endmacro %}
-
 
 {% macro mostrar_error(campo) %}
 {% if campo.errors %}
@@ -160,8 +145,13 @@
   <div class="row">
 
     <div class="col-md-3">
-
-      <a>Aprobado: {{evento["aprobado"]}}</a>
+        {% if evento.aprobado==True %}
+        <a>Aprobado</a>
+        <span class="iconify" data-icon="emojione:check-mark-button" data-inline="false">Aprobado</span>
+        {% else %}
+        <a>Pendiente</a>
+        <span class="iconify" data-icon="mdi:clock-alert-outline" data-inline="false"></span>
+        {% endif %}
 
     </div>
     <div class="col-md-3">

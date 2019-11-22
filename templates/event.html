@@ -1,4 +1,4 @@
-{% from "macros.html" import standarComments,mostrarevents,expanded_event %}
+{% from "macros.html" import standarComments,mostrarevents,expanded_event  with context%}
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
 {% extends "header_footer.html" %}
 {% block estilos %}
@@ -59,18 +59,10 @@
                 <div class="col-md-12">
                   {% for comentario in commentList %}
                   {{ standarComments(comentario) }}
+                  {% endfor %}
 
                 </div>
 
-              </div>
-              <div class="row">
-              <div class="col-md-12">
-              {% if comentario.usuarioId == current_user.usuarioId %}
-
-              <a type="button"class="btn-btn-danger" href="{{url_for('deleteMyComment',id=comentario["comentarioId"])}}">Eliminar comentario</a>
-              {% endif %}
-              {% endfor %}
-                </div>
               </div>
             </div>
           </div>

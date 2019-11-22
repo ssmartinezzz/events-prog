@@ -1,4 +1,4 @@
-{% from "macros.html" import comentariosadmin,expanded_event,mostrarevents %}
+{% from "macros.html" import standarComments,expanded_event,mostrarevents with context %}
 {% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
 {% extends "header_footer.html" %}
 {% block estilos %}
@@ -20,7 +20,7 @@
             <div class="col-md-2">
             </div>
             <div class="col-md-4">
-              <a type="button" class="btn btn-warning" href="{{url_for('deletedByAdmin',id=evento["eventoId"])}}">Eliminar</a>
+              <a type="button" class="btn btn-warning" href="{{url_for('deleteEvent',id=evento["eventoId"])}}">Eliminar</a>
             </div>
           </div>
         </div>
@@ -31,6 +31,31 @@
             </div>
             <div class="col-md-8">
               <h4>Sección de comentarios</h4>
+              {% if   current_user.is_authenticated   %}
+              <button type="button" id="botonhacercoment" class="btn btn-dark boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+              {% endif %}
+              <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
+                  <form method="POST" action="{{ url_for('detailedEvent', id=evento["eventoId"]) }}" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="modal-content modalcoment2">
+                      <div class="modal-header">
+                        <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Comentar Evento</h3>
+                        <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true" class="ekis">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="comentario">
+                          {{ mostrar_campo(form.comentario, class='form-control', style="width: 490px; height: 170px" )}}
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>
+                        {{ mostrar_campo_submit(form.submit , class='btn btn-danger enviar')}}
+                      </div>
+                    </div>
+                  </form>
             </div>
             <div class="col-md-2">
             </div>
@@ -38,7 +63,7 @@
           <div class="row">
             <div class="col-md-12">
               {% for comentario in comentadmin %}
-              {{ comentariosadmin(comentario) }}
+              {{ standarComments(comentario) }}
               {% endfor %}
             </div>
           </div>

@@ -7,7 +7,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed #Importa funcion
 from app import app, db
 
 #Clase de Registro
-class Registerform(FlaskForm):
+class Registerform(FlaskForm): #Creamos una clase que hereda FlaskForm , parte de flask_wtf.
 
     #Función de validación de nombre de usuario
     def nombre_usuario(form,field):
@@ -15,6 +15,10 @@ class Registerform(FlaskForm):
         if (field.data.find("_")!= -1) or (field.data.find("#")!= -1) :
             #Mostrar error de validación
              raise validators.ValidationError("El nombre de usuario solo puede contener letras, números y .")
+    def cuenta_existente(form,field):
+        if Usuario.query.filter_by(email=field.data).first():
+            raise ValidationError("Se ha registrado una cuenta con dicho mail")
+
 
 
 
@@ -22,7 +26,11 @@ class Registerform(FlaskForm):
     nombre = StringField('Nombre',
     [
         #Definición de validaciones
-        validators.Required(message = "Completar nombre")
+        validators.Required(message = "Completar nombre"),
+        validators.length(min=4, max=25, message='La longitud del nombre de usuario no es válida'),
+        #Validación definida por el usuario
+        nombre_usuario
+
     ])
 
     apellido = StringField('Apellido',
@@ -46,10 +54,11 @@ class Registerform(FlaskForm):
     email = EmailField('Correo',
     [
         validators.Required(message = "Completar email"),
-        validators.Email( message ='Formato de mail incorrecto')
+        validators.Email( message ='Formato de mail incorrecto') #metodo de FlaskForm que nos permite validar que un mail este en formato correcto
+
     ])
 
-    submit = SubmitField("Registrarse")
+    submit = SubmitField("Registrarse") #Campos para enviar.
 
 
 class Logform(FlaskForm):
@@ -74,14 +83,14 @@ class Logform(FlaskForm):
 class Navegationform(FlaskForm):
         fechainicio = DateField('Fecha',
         [
-            validators.Optional()
+            validators.Optional() #no es obligatorio cada vez que se filtre un evento hacerlo por fechas por eso optional
         ])
 
         fechafinal= DateField('Fecha',
         [
-            validators.Optional()
+            validators.Optional() # Los validadores de las fechas son opcionales, ya que no es obligatorio cada vez que se filtre un evento hacerlo por fechas
         ])
-        lista_opciones = [
+        lista_opciones = [ #Definimos las diferentes opciones por que no se pueden definir directamente en SelectField, debemos crear la tupla para que choices la detecte
         ('null','Seleccione una categoría'),
         ('Deportivo','Deportivo'),
         ('Aprendizaje','Aprendizaje'),
@@ -89,7 +98,7 @@ class Navegationform(FlaskForm):
         ('Otro','Otro')
     ]
     #Definición de campo select
-        opciones = SelectField('Opción', choices=lista_opciones)
+        opciones = SelectField('Opción', choices=lista_opciones) #Propiedad que es una secuencia de valores | cartel
 
         submit = SubmitField("Filtrar")
 class Commentsform(FlaskForm):
@@ -121,18 +130,18 @@ class Eventform(FlaskForm):
         [
             validators.Required(message="Completar fecha del evento")
         ])
-    tipos_evento = [
+    tipos_evento = [ #Defino las opciones que puede tomar el selectField
     ('Deportivo','Deportivo'),
     ('Aprendizaje','Aprendizaje'),
     ('Fiesta','Fiesta'),
     ('Otro','Otro')
     ]
-    opciones = SelectField('Tipo de evento', choices=tipos_evento)
+    opciones = SelectField('Tipo de evento', choices=tipos_evento) #Propiedad que es una secuencia de valores | cartel
         #Definición de campo de archivo
-    imagen = FileField(validators=[
+    imagen = FileField(validators=[ #Tipo de field para archivos
             FileRequired(),
             #Validación de tipo de archivo
-            FileAllowed(['jpg', 'png'], 'El archivo debe ser una imagen jpg o png')
+            FileAllowed(['jpg', 'png'], 'El archivo debe ser una imagen jpg o png') 
         ])
     desc = TextAreaField('Descripcion')
     #Definición de campo submit

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-from funciones import *
+from db_functions import *
 from flask import Flask,request,render_template,redirect, url_for
 from flask import flash  # importar para mostrar mensajes flash
 from forms_classes import *  # importar clase de formulario
@@ -16,7 +16,7 @@ from flask_login import login_required, login_user, logout_user, current_user, L
 
 @login_manager.unauthorized_handler #Método que cuando intente acceder a ruta sin estar logeado muestre lo siguiente. unauthorized_handler nos permite presonalizar este tipo de error sin tener que abortar con el error 401
 def unauthorized_callback():
-    flash('Para continuar debe iniciar sesión.')
+    flash('Para continuar debe iniciar sesión.','danger')
     return redirect(url_for('index'))
 
 
@@ -57,11 +57,11 @@ def logIn():
         usuario=Usuario.query.filter_by(email=formulariolog.email.data).first() #Obtengo el mail del usuario de la bd y lo guardo en un objeto para poder pasarlo por parametro al login_user del LoginManager
         if usuario is not None and usuario.verificar_pass(formulariolog.password.data): # Verifico la password encriptada en la bd y la comparo con la del form
             login_user(usuario,False) # Realizo el login del usuario, el False denota que el campo de remember me no este activado
-            flash('Usuario Logeado exitosamente')  # Mostrar mensaje
+            flash('Usuario Logeado exitosamente','success')  # Mostrar mensaje
             getUser(formulariolog)  # Imprimir datos por consola
             return redirect(url_for('index'))
         else:
-            flash('Usuario contraseñas incorrectos!')
+            flash('Usuario contraseñas incorrectos!','danger')
             return redirect(url_for('index'))
     return render_template('login.html', formulariolog=formulariolog)
 
@@ -70,14 +70,8 @@ def logIn():
 @login_required
 def logout():
     logout_user() # Metodo del LoginManager que permite deslogear una cuenta
-    #Insntanciar formulario de Login
-    formularionav=Navegationform()
-    formulariolog = Logform()
-    pag=1
-    pag_tam=6
-    eventos = Evento.query.order_by(Evento.fecha).paginate(pag,pag_tam,error_out=False)
-    flash('Logged off!')
-    return render_template('index.html', formulariolog=formulariolog,formularionav=formularionav,eventos=eventos)
+    flash('Logged off!','danger')
+    return redirect(url_for('index'))
 
 
 
@@ -85,15 +79,20 @@ def logout():
 @app.route('/registro', methods=["POST", "GET"])
 def register():
     formulario = Registerform()  # Instanciar formulario de registro
-    if formulario.validate_on_submit():  # Si el formulario ha sido enviado y es validado correctamente
-        mostrar_datos(formulario)  # Imprimir datos por consola
-        createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)#Paso los campos obligatorios que necesita esta funcion para crear un nuevo usuario, es decir los campos de los modelos
-        email=formulario.email.data# Almaceno en las variables propias de la funcion el contenido del formulario
-        sendMail(email,'Su cuenta de EventZ ha sido creada!','mail/newaccount') #Funcion del mail que requiere la direccion a enviar "VAR mail", con el mensaje a mostrar teniendo en cuenta un formato txt y html que poseemos
-        flash('Usuario registrado exitosamente')  # Mostrar mensaje
-        print(formulario.email.data)#terminal
-        return redirect(url_for('index'))
-    return render_template('registro.html', formulario=formulario)
+    if formulario.submit.data is True and formulario.validate_on_submit():# Si el formulario ha sido enviado y es validado correctamente
+        if registredUser(formulario.email.data):
+            mostrar_datos(formulario)  # Imprimir datos por consola
+            createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)#Paso los campos obligatorios que necesita esta funcion para crear un nuevo usuario, es decir los campos de los modelos
+            email=formulario.email.data# Almaceno en las variables propias de la funcion el contenido del formulario
+            sendMail(email,'Su cuenta de EventZ ha sido creada!','newaccount', formulario=formulario) #Funcion del mail que requiere la direccion a enviar "VAR mail", con el mensaje a mostrar teniendo en cuenta un formato txt y html que poseemos
+            flash('Usuario registrado exitosamente','success')  # Mostrar mensaje
+            print(formulario.email.data)#terminal
+            return redirect(url_for('index'))
+
+        else:
+            flash('Existe una cuenta registrada con el email ingresado', 'danger')
+
+    return render_template('register.html', formulario=formulario)
 
 
 @app.route('/menu')
@@ -117,7 +116,7 @@ def createNewEvent():
         f = formulario.imagen.data  # Obtener imagen
         filename = secure_filename(f.filename)
         f.save(os.path.join('static/Fondo/', filename))
-        flash("Evento creado exitosamente!")
+        flash("Evento creado exitosamente!",'success')
         showEve(formulario)
         listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
         createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,current_user.usuarioId)
@@ -132,7 +131,7 @@ def updateEvent(id):
     formulario=Eventform(obj=evento)
     Eventform.opcional(formulario.imagen)
     if formulario.validate_on_submit():
-        flash('Las modificaciones del evento han sido guardadas con éxito!!!')
+        flash('Las modificaciones del evento han sido guardadas con éxito!!!','success')
         showEve(formulario)
         evento.nombre=formulario.titulo.data    # A los valores de la query del objeto que queremos le asignamos los nuevos conseguidos por el propio formulario
         evento.fecha=formulario.fechaevento.data
@@ -140,6 +139,7 @@ def updateEvent(id):
         evento.tipo=formulario.opciones.data
         evento.descripcion=formulario.desc.data
         evento.imagen=formulario.imagen.data
+        evento.aprobado=False
 
         updateDBEvent(evento)
         return redirect(url_for('index'))
@@ -163,28 +163,26 @@ def deleteEvent(id):
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('Evento eliminado exitosamente!')
+    flash('Evento eliminado exitosamente!','warning')
     if current_user.admin==True:
         return redirect(url_for('eventsControl'))
     else:
         return redirect(url_for('myEvents'))
 
 
-
-
 @app.route('/comentario/borrar/<id>')
 @login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def deleteMyComment(id):
-    comentario = db.session.query(Comentario).get(id)
-    eventID= comentario.eventoId
-    db.session.delete(comentario)
+    comentario = db.session.query(Comentario).get(id) #Realizo la consulta para traer un solo comentario especificando el id
+    eventID= comentario.eventoId #Necesito almacenar el id del evento al cual pertenecia el comentario para poder volver a la vista del mismo
+    db.session.delete(comentario) #Borro el comentario de la Db, procedo al manejo de errores.
     try:
-        db.session.commit()
+        db.session.commit() #Si no hay problemas, realiza los cambios efectuados
     except SQLAlchemyError as e:
-        db.session.rollback()
+        db.session.rollback() #Si ocurre un error, retrocede los cambios efectuados en la base al eliminar el comentario y almacenamos el error en nuestro log gracias al handler de errores
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('El comentario ha sido borrado con exito!')
+    flash('El comentario ha sido borrado con exito!','warning')
     return redirect(url_for('detailedEvent',id=eventID))
 
 # RUTA Y FUNCION PARA LISTAR LOS EVENTOS CON LOS COMENTARIOS Y CREARLOS
@@ -193,12 +191,12 @@ def detailedEvent(id):
     evento = db.session.query(Evento).get(id)
     commentList =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
     form = Commentsform()
-    if form.validate_on_submit():
-        flash('Comentario Enviado')
+    if form.validate_on_submit(): #Si los datos del formulario son correctos procede a ejecutar lo siguiente
+        flash('Comentario Enviado','success')
         pCommentary(form)
         createComment(form.comentario.data,current_user.usuarioId,id)
         return redirect(url_for('detailedEvent',id=id))
-    return render_template('evento.html', id=id, evento=evento,form=form,commentList=commentList)
+    return render_template('event.html', id=id, evento=evento,form=form,commentList=commentList) #Lleva a la vista del evento dicho en particular.
 
 """"RUTAS QUE SOLO PUEDE ACCEDER EL ADMINISTRADOR DEL SITIO, CONTIENE LAS FUNCIONES"""
 
@@ -206,9 +204,9 @@ def detailedEvent(id):
 @app.route('/admin/menu')
 @login_required#Metodo de Flask Login del LoginManager que permite darle acceso restringido a ciertas vistas.
 def menuadmin():
-    if not current_user.admin:
-        flash('Forbidden route, unable to access!')
-        return redirect(url_for('index'))
+    if not current_user.admin: #Corrobora gracias el id del Usuario de la bd almacenado en current_user gracias a LoginManager, si el mismo en la Db si es administrador o no
+        flash('Forbidden route, unable to access!','danger')
+        return redirect(url_for('index')) #Al no ser admin nos muestra una notificacion de error y procede a llevarnos a la pagina de inicio
     else:
         return render_template('admin-menu.html')
 
@@ -217,22 +215,23 @@ def menuadmin():
 @login_required
 def eventsControl():
     if not current_user.admin:
-        flash('Forbidden route, unable to access!')
+        flash('Forbidden route, unable to access!','danger')
         return redirect(url_for('index'))
     listaeventos=db.session.query(Evento).all()
-    return render_template('admineventos.html',listaeventos=listaeventos)
+    return render_template('admin-events.html',listaeventos=listaeventos)
 
 #Ruta para que el admin regule un evento "x".
 @app.route('/admin/evento/<id>',methods=["POST","GET"])
 @login_required
 def eventbyAdmin(id):
     if current_user.admin:
+        form=Commentsform()
         evento = db.session.query(Evento).get(id)
         comentadmin =db.session.query(Comentario).filter(Comentario.eventoId==id).order_by(Comentario.fechahora).all()
-        return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento)
+        return render_template('event-adminview.html', comentadmin=comentadmin,id=id,evento=evento,form=form)
 
     elif  not current_user.admin:
-        flash('Forbidden route, unable to access!')
+        flash('Forbidden route, unable to access!','danger')
         return redirect(url_for('index'))
 
 
@@ -241,25 +240,19 @@ def eventbyAdmin(id):
 @login_required
 def checkEvent(id):
     if not current_user.admin:
-        flash('Forbidden route, unable to access!')
+        flash('Forbidden route, unable to access!','danger')
         return redirect(url_for('index'))
     evento=db.session.query(Evento).get(id)
     if evento.aprobado==True:
         print("Evento ya aprobado con anterioridad")
         return redirect(url_for('index'))
-    elif evento.aprobado==False:
-        evento.aprobado=True
-        email=evento.usuario.email
-        updateDBEvent(evento)
-        sendMail(email,'Su evento ha sido aprobado por el administrador!','mail/event-confirm')
-        try:
-            db.session.commit()
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            mensaje=str(e._message())
-            getLogEvents(mensaje)
+    elif evento.aprobado==False: #Si el evento se encontraba en estado pendiente de aprobacion aprobado=False procede a:
+        evento.aprobado=True #Establecer como aprobado el evento
+        email=evento.usuario.email # Se obtiene al Usuario relacionado con el evento, es decir el propietario y se obtiene su email.
+        updateDBEvent(evento) # Funcion que actualizara el objeto del evento, y alli maneja excepciones
+        sendMail(email,'Su evento ha sido aprobado por el administrador!','event-confirm')
         print(email)
-        flash('Evento aprobado!')
+        flash('Evento aprobado!','success')
         return redirect(url_for('eventsControl',evento=evento))
 
 
@@ -268,16 +261,16 @@ def checkEvent(id):
 @login_required
 def deleteComment(id):
     if not current_user.admin:
-        flash('Forbidden route, unable to access!')
+        flash('Forbidden route, unable to access!','danger')
         return redirect(url_for('index'))
     comentario = db.session.query(Comentario).get(id)
-    eventID= comentario.eventoId
-    db.session.delete(comentario)
+    eventID= comentario.eventoId # Antes de borrar el comentario, guardamos el evento relacionado al mismo para poder redireccionarnos despues de ejecutar al mismo evento
+    db.session.delete(comentario)# Elimina el Comentario del evento, intentará efectuar los cambios en la db.
     try:
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('El comentario ha sido borrado con exito!')
+    flash('El comentario ha sido borrado con exito!','success')
     return redirect(url_for('eventbyAdmin',id=eventID))

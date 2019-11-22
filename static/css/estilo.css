@@ -12,6 +12,7 @@ body {
   margin-top: 30px;
   margin-bottom: 50px;
 
+
 }
 
 .card-deck {
@@ -90,20 +91,24 @@ body {
   padding-bottom: 10px;
   border: 2px solid black;
   background-image: url('../Fondo/fondoblanco.jpg');
+  margin-bottom: 50px;
 }
 /*parte css de la vista evento en particular*/
 
 
 /*Encabezado y pie de la página*/
+
 #logo{
   max-width: 50px;
   max-height: 50px;
   padding-right: 10px;
 }
 #Pie{
-
-
   background-color: white;
+}
+.headbotones{
+  padding-right:20px;
+
 }
 /*ventana del login*/
 .loginuser{

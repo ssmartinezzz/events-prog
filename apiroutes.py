@@ -13,15 +13,15 @@ from errors import *
 def listAllEventsApi():
     eventos = db.session.query(Evento).filter(Evento.aprobado==False)
 
-    #Recorrer la lista de personas convirtiendo cada una a JSO
-    return jsonify({ 'Eventos': [evento.a_json() for evento in eventos] })
+    #Recorrer la lista de personas convirtiendo cada una a JSON
+    return jsonify({ 'Eventos': [evento.a_json() for evento in eventos] }) #Convierte a Json y lo devuelve por terminal todos los eventos que estan contenidos en la listadeeventos, mediante un foreach(similar a java)
 
 #Listar evento por id
 #curl -i -H "Content-Type:application/json" -H "Accept: application/json" http://localhost:5000/admin/listareventos/id
 @app.route('/admin/listareventos/<id>',methods=['GET'])
 def listEventsbyApi(id):
     evento =  db.session.query(Evento).get(id)
-    return jsonify({'Evento':[evento.a_json()]}) #Nos convierte a Json el objeto evento que estamos trayendo de la consulta de base de datos, y lo convertimos usando el metodo creado en el onjeto de la clase
+    return jsonify({'Evento':[evento.a_json()]}) #Nos convierte a Json el objeto evento que estamos trayendo de la consulta de base de datos, y lo convertimos usando el metodo creado en el objeto de la clase
 
 #Aprobar evento por id
 #curl -X POST -i -H  "Content-Type:application/json" -H "Accept:application/json" http://127.0.0.1:5000/admin/evento/aprobar/id
@@ -34,7 +34,7 @@ def aprobarEventosApi(id):
     elif (evento.aprobado==False):
         evento.aprobado=True
         email=evento.usuario.email
-        sendMail(email,'Su evento ha sido aprobado!','mail/event-confirm')
+        sendMail(email,'Su evento ha sido aprobado!','event-confirm')
         try:
             db.session.commit()
         except SQLAlchemyError as e:
@@ -50,7 +50,7 @@ def aprobarEventosApi(id):
 @csrf.exempt
 def apiActualizarEvento(id):
     evento =  db.session.query(Evento).get(id)
-    evento.nombre = request.json.get('nombre', evento.nombre)
+    evento.nombre = request.json.get('nombre', evento.nombre) #El objeto va a realizar un pedido de que obtenga del Json segun la clave, un argumento valor json y lo convierte a uno del tipo del objeto
     evento.fecha = request.json.get('fecha', evento.fecha)
     evento.descripcion = request.json.get('descripcion', evento.descripcion)
     evento.tipo=request.json.get('tipo', evento.tipo)
