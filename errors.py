@@ -30,3 +30,7 @@ def getLogEvents(error):
     log.write(f"\nHa ocurrido el error:{error})")
     log.write(f"\nDATE:{datetime.datetime.now()}$\n")
     log.close()
+
+
+def errores():
+    return render_template('500.html')

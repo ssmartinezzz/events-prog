@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
 from db_functions import *
-from flask import Flask,request,render_template,redirect, url_for
 from flask import flash  # importar para mostrar mensajes flash
 from forms_classes import *  # importar clase de formulario
 from werkzeug.utils import secure_filename
@@ -11,7 +10,7 @@ from models import *
 import os
 from email_functions import *
 from flask_login import login_required, login_user, logout_user, current_user, LoginManager
-
+from errors import *
 
 
 @login_manager.unauthorized_handler #Método que cuando intente acceder a ruta sin estar logeado muestre lo siguiente. unauthorized_handler nos permite presonalizar este tipo de error sin tener que abortar con el error 401
@@ -82,7 +81,9 @@ def register():
     if formulario.submit.data is True and formulario.validate_on_submit():# Si el formulario ha sido enviado y es validado correctamente
         if registredUser(formulario.email.data):
             mostrar_datos(formulario)  # Imprimir datos por consola
-            createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)#Paso los campos obligatorios que necesita esta funcion para crear un nuevo usuario, es decir los campos de los modelos
+            usuario=createUser(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data,admin=False)#Paso los campos obligatorios que necesita esta funcion para crear un nuevo usuario, es decir los campos de los modelos
+            if usuario==False:
+                return errores()
             email=formulario.email.data# Almaceno en las variables propias de la funcion el contenido del formulario
             sendMail(email,'Su cuenta de EventZ ha sido creada!','newaccount', formulario=formulario) #Funcion del mail que requiere la direccion a enviar "VAR mail", con el mensaje a mostrar teniendo en cuenta un formato txt y html que poseemos
             flash('Usuario registrado exitosamente','success')  # Mostrar mensaje
@@ -119,7 +120,10 @@ def createNewEvent():
         flash("Evento creado exitosamente!",'success')
         showEve(formulario)
         listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all()
-        createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,current_user.usuarioId)
+
+        evento=createEvent(formulario.titulo.data,formulario.fechaevento.data,formulario.hora.data,formulario.desc.data,filename,formulario.opciones.data,current_user.usuarioId)
+        if evento==False:
+            return errores()
         return redirect(url_for('myEvents'))
     return render_template('create-event.html', formulario=formulario, destino="createNewEvent")
 
@@ -141,7 +145,9 @@ def updateEvent(id):
         evento.imagen=formulario.imagen.data
         evento.aprobado=False
 
-        updateDBEvent(evento)
+        actualizado=updateDBEvent(evento)
+        if actualizado==False:
+            return errores()
         return redirect(url_for('index'))
     else:
             formulario.titulo.data=evento.nombre
@@ -159,15 +165,18 @@ def deleteEvent(id):
     db.session.delete(evento)
     try:
         db.session.commit()
+        flash('Evento eliminado exitosamente!','warning')
+        if current_user.admin==True:
+            return redirect(url_for('eventsControl'))
+        else:
+            return redirect(url_for('myEvents'))
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('Evento eliminado exitosamente!','warning')
-    if current_user.admin==True:
-        return redirect(url_for('eventsControl'))
-    else:
-        return redirect(url_for('myEvents'))
+        return render_template('500.html')
+
+
 
 
 @app.route('/comentario/borrar/<id>')
@@ -178,12 +187,13 @@ def deleteMyComment(id):
     db.session.delete(comentario) #Borro el comentario de la Db, procedo al manejo de errores.
     try:
         db.session.commit() #Si no hay problemas, realiza los cambios efectuados
+        flash('El comentario ha sido borrado con exito!','warning')
+        return redirect(url_for('detailedEvent',id=eventID))
     except SQLAlchemyError as e:
         db.session.rollback() #Si ocurre un error, retrocede los cambios efectuados en la base al eliminar el comentario y almacenamos el error en nuestro log gracias al handler de errores
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('El comentario ha sido borrado con exito!','warning')
-    return redirect(url_for('detailedEvent',id=eventID))
+        return render_template('500.html')
 
 # RUTA Y FUNCION PARA LISTAR LOS EVENTOS CON LOS COMENTARIOS Y CREARLOS
 @app.route('/evento/<id>', methods=["POST", "GET"])
@@ -194,7 +204,9 @@ def detailedEvent(id):
     if form.validate_on_submit(): #Si los datos del formulario son correctos procede a ejecutar lo siguiente
         flash('Comentario Enviado','success')
         pCommentary(form)
-        createComment(form.comentario.data,current_user.usuarioId,id)
+        comentario=createComment(form.comentario.data,current_user.usuarioId,id)
+        if comentario==False:
+            return errores()
         return redirect(url_for('detailedEvent',id=id))
     return render_template('event.html', id=id, evento=evento,form=form,commentList=commentList) #Lleva a la vista del evento dicho en particular.
 
@@ -268,9 +280,11 @@ def deleteComment(id):
     db.session.delete(comentario)# Elimina el Comentario del evento, intentará efectuar los cambios en la db.
     try:
         db.session.commit()
+        flash('El comentario ha sido borrado con exito!','success')
+        return redirect(url_for('eventbyAdmin',id=eventID))
+
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    flash('El comentario ha sido borrado con exito!','success')
-    return redirect(url_for('eventbyAdmin',id=eventID))
+        return render_template('500.html')

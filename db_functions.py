@@ -2,6 +2,7 @@ from app import db
 from models import *
 from sqlalchemy.exc import SQLAlchemyError
 from errors import *
+from flask import render_template
 
 #Conjunto de funciones que nos muestran los valores almacenados en los distintos tipos de formularios que disponemos. Como Formulario de comentarios,LogIn,Evento, Usuario
 def mostrar_datos(formulario):
@@ -40,9 +41,13 @@ def createEvent(nombre,fecha,hora,descripcion,imagen,tipo,usuarioId): #Se le agr
     try:
         db.session.commit()  #Se intentará subir los cambios en la base. Si Ocurre algun tipo de error se exceptuara dicho commit y se hara un rollback
     except SQLAlchemyError as e:
+
         db.session.rollback() #El rollback revierte los cambios de la base de datos. Si llegase a ocurrir un error se volveria al estado de la db antes de añadir el evento.
         mensaje= str(e._message())# Parseamos el error a string para poder almacenarlo en una variable.
         getLogEvents(mensaje) # La variable es almacenada y la funcion getLogEvents la añade a un log de errores para que el admin la vea.
+        return False
+    return evento
+
 
 #Funcion que recibe los datos de un formulario de registro de usuario,exceptuando el campo de administrador.
 def createUser(nombre,apellido,email,password,admin):
@@ -56,6 +61,10 @@ def createUser(nombre,apellido,email,password,admin):
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
+        return False
+    return usuario
+
+
 
 def updateDBEvent(evento): #Recibe enteramente una instancia de un Objeto evento, con todos los datos del formulario actualizado, reemplazados en el objeto
     print("Actualizando evento!")
@@ -66,6 +75,9 @@ def updateDBEvent(evento): #Recibe enteramente una instancia de un Objeto evento
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
+        return False
+    return evento
+
 
 def createComment(contenido,usuarioId,eventoId): #Requiere un argumento un valor de formulario, los otros se obtienen por consultas
     #Funcion que permite por el panel de mis eventos eliminar el evento que se toque con el respectivo id
@@ -80,7 +92,5 @@ def createComment(contenido,usuarioId,eventoId): #Requiere un argumento un valor
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-
-
-def mysql_query(query):
-    return query.statement.compile(compile_kwargs={"literal_binds": True})
+        return False
+    return comment
