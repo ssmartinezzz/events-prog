@@ -65,14 +65,17 @@ class Usuario(UserMixin,db.Model): #Hereda model para poder trabajar con el ORM 
         raise AttributeError('La password no puede leerse')
     #Al setear la pass generar un hash
     @notepassword.setter
-    def notepassword(self, notepassword):
-        self.password = generate_password_hash(notepassword)
-    def get_id(self):
+    def notepassword(self, notepassword):  #Funcion especifica de encriptar la password del usuario
+        self.password = generate_password_hash(notepassword)# Iguala la password guardada en la tabla del modelo de bases de datos, para encriptarla utiliza
+        # una funcion propia de  flask-httpauth.
+
+
+    def get_id(self): #Metodo que nos devuelve el iD del Usuario.
            return (self.usuarioId)
 
     #Al verififcar pass comparar hash del valor ingresado con el de la db
     def verificar_pass(self, notepassword):
-        return check_password_hash(self.password, notepassword)
+        return check_password_hash(self.password, notepassword) #Metodo de flask-httpauth
 
 #Asi es como se imprime el objeto Usuario mediante su constructor
     def __repr__(self):

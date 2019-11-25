@@ -19,6 +19,11 @@ class Registerform(FlaskForm): #Creamos una clase que hereda FlaskForm , parte d
         if Usuario.query.filter_by(email=field.data).first():
             raise ValidationError("Se ha registrado una cuenta con dicho mail")
 
+    def apellido_usuario(form,field):
+        #Verificar que no contenga guiones bajors o numeral
+        if (field.data.find("_")!= -1) or (field.data.find("#")!= -1) :
+            #Mostrar error de validación
+             raise validators.ValidationError("El apellido solo puede contener letras, números y .")
 
 
 
@@ -35,7 +40,8 @@ class Registerform(FlaskForm): #Creamos una clase que hereda FlaskForm , parte d
 
     apellido = StringField('Apellido',
     [
-        validators.Required(message = "Completar apellido")
+        validators.Required(message = "Completar apellido"),
+        apellido_usuario
     ])
 
 
@@ -141,7 +147,7 @@ class Eventform(FlaskForm):
     imagen = FileField(validators=[ #Tipo de field para archivos
             FileRequired(),
             #Validación de tipo de archivo
-            FileAllowed(['jpg', 'png'], 'El archivo debe ser una imagen jpg o png') 
+            FileAllowed(['jpg', 'png'], 'El archivo debe ser una imagen jpg o png')
         ])
     desc = TextAreaField('Descripcion')
     #Definición de campo submit

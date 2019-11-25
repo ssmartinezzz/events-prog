@@ -34,16 +34,17 @@ def aprobarEventosApi(id):
     elif (evento.aprobado==False):
         evento.aprobado=True
         email=evento.usuario.email
-        sendMail(email,'Su evento ha sido aprobado!','event-confirm')
+        sendMail(email,'Su Evento ha sido aprobado','event-confirm')
         try:
             db.session.commit()
+            print("El evento ha sido aprobado")
+            print(email)
+            return jsonify({'Evento':[evento.a_json()]})    
         except SQLAlchemyError as e:
             db.session.rollback()
             mensaje=str(e._message())
             getLogEvents(mensaje)
-        print("El evento ha sido aprobado")
-        print(email)
-        return jsonify({'Evento':[evento.a_json()]})
+
 
 #curl -i -X PUT -H "Content-Type:application/json" -H "Accept:application/json" http://localhost:5000/api/evento/15 -d '{"nombre":"eventaso"}'
 @app.route('/api/evento/<id>', methods=['PUT'])
@@ -58,11 +59,12 @@ def apiActualizarEvento(id):
     db.session.add(evento)
     try:
         db.session.commit()
+        return jsonify(evento.a_json()) , 201#Convertir la persona actualizada en JSON
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    return jsonify(evento.a_json()) , 201#Convertir la persona actualizada en JSON
+
     #Pasar código de status
 
 #Eliminar evento
@@ -74,12 +76,13 @@ def deleteApiEvent(id):
     db.session.delete(eventoaeliminar)
     try:
         db.session.commit()
+        print("Evento eliminado con éxito")
+        return '',204
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    print("Evento eliminado con éxito")
-    return '',204
+
 
 
 
@@ -104,9 +107,9 @@ def deleteCommentapi(id):
     db.session.delete(comentario)
     try:
         db.session.commit()
+        print("Comentario borrado correctamente")
+        return '',204
     except SQLAlchemyError as e:
         db.session.rollback()
         mensaje=str(e._message())
         getLogEvents(mensaje)
-    print("Comentario borrado correctamente")
-    return '',204
