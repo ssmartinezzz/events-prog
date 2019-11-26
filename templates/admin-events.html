@@ -9,12 +9,13 @@
         <div class="col-md-4">
         </div>
         <div class="col-md-4">
-          <h7 id="titulosblancos">Eventos aprobados</h7>
+          <h7 id="titulosblancos">Eventos pendientes de aprobacion</h7>
           {% for evento in listaeventos %}
-          {% if (evento.aprobado==True) %}
+          {% if (evento.aprobado==False) %}
           {{ evento_admin(evento)}}
           {% endif %}
           {% endfor %}
+
         </div>
         <div class="col-md-4">
         </div>
@@ -23,12 +24,13 @@
         <div class="col-md-4">
         </div>
         <div class="col-md-4">
-          <h7 id="titulosblancos">Eventos pendientes de aprobacion</h7>
+          <h7 id="titulosblancos">Eventos aprobados</h7>
           {% for evento in listaeventos %}
-          {% if (evento.aprobado==False) %}
+          {% if (evento.aprobado==True) %}
           {{ evento_admin(evento)}}
           {% endif %}
           {% endfor %}
+
         </div>
         <div class="col-md-4">
         </div>
